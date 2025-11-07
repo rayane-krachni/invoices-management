@@ -10,6 +10,6 @@ export const getRouter = () => {
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
   })
-
+//postgres://postgres:POSTGRES@localhost:5432/invoices_db
   return router
 }

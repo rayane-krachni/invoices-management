@@ -14,7 +14,7 @@ function RouteComponent() {
       }}
     >
       <div className="w-full max-w-2xl p-8 rounded-xl backdrop-blur-md bg-black/50 shadow-xl border-8 border-black/10">
-        <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-pink-500 via-purple-500 to-green-400 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-pink-500 via-blue-500 to-green-400 bg-clip-text text-transparent">
           SSR Demos
         </h1>
         <div className="flex flex-col gap-4">
@@ -26,7 +26,7 @@ function RouteComponent() {
           </Link>
           <Link
             to="/demo/start/ssr/full-ssr"
-            className="text-2xl font-bold py-6 px-8 rounded-lg bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white text-center shadow-lg transform transition-all hover:scale-105 hover:shadow-purple-500/50 border-2 border-purple-400"
+            className="text-2xl font-bold py-6 px-8 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white text-center shadow-lg transform transition-all hover:scale-105 hover:shadow-blue-500/50 border-2 border-blue-400"
           >
             Full SSR
           </Link>

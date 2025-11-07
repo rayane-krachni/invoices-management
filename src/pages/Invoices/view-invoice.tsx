@@ -31,7 +31,7 @@ export const ViewInvoiceModal: React.FC<ViewInvoiceModalProps> = ({ isOpen, invo
           <FaTimes />
         </button>
 
-        <h2 className="text-2xl font-bold mb-4 text-purple-700">Détails de la facture</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Détails de la facture</h2>
 
 
         {/* PDF Viewer */}

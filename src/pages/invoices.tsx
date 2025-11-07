@@ -81,7 +81,6 @@ const InvoicesPage: React.FC = () => {
     fetchInvoices();
   }, []);
 
-  // 🔍 Filter invoices by fournisseur or client name
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredInvoices(invoices);
@@ -106,7 +105,6 @@ const InvoicesPage: React.FC = () => {
     setDeletingId(id);
     try {
       const result = await deleteInvoiceServerFn({ data: { id } });
-
       if (result.success) {
         setInvoices((prev) => prev.filter((invoice) => invoice.id !== id));
         toast.success("Facture supprimée avec succès !");
@@ -127,33 +125,33 @@ const InvoicesPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-5 px-4 py-6 bg-gray-50 min-h-screen">
+    <div className="flex flex-col gap-5 px-3 md:px-6 py-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-800">
           🧾 Liste des factures
         </h1>
 
-        <div className="flex flex-row gap-2 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <input
             type="text"
             placeholder="Rechercher par client ou fournisseur..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full md:w-72 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder:text-gray-400"
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400"
           />
           <Button
             variant="outline"
-            className="w-full md:w-auto py-3 font-semibold bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto py-3 font-semibold bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2"
             onClick={() => setOpenInvoiceModal(true)}
           >
-            <FaFileInvoice /> Créer une facture
+            <FaFileInvoice /> Créer
           </Button>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow-lg border border-purple-100 overflow-hidden">
+      {/* Table Wrapper (responsive scroll) */}
+      <div className="bg-white rounded-xl shadow-lg border border-blue-100 overflow-x-auto">
         {loading ? (
           <p className="text-center py-8 text-gray-500">
             Chargement des factures...
@@ -163,67 +161,69 @@ const InvoicesPage: React.FC = () => {
             Aucune facture trouvée.
           </p>
         ) : (
-          <Table>
-            <TableHeader className="bg-purple-50">
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Fournisseur</TableHead>
-                <TableHead>Articles</TableHead>
-                <TableHead>Total HT</TableHead>
-                <TableHead>Total TVA</TableHead>
-                <TableHead>Total TTC</TableHead>
-                <TableHead>Remise</TableHead>
-                <TableHead>Chauffeur</TableHead>
-                <TableHead>Téléphone</TableHead>
-                <TableHead>Plaque</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredInvoices.map((inv, index) => (
-                <TableRow
-                  key={inv.id}
-                  className="hover:bg-purple-50 transition-colors"
-                >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{inv.date}</TableCell>
-                  <TableCell>{inv.invoiceType}</TableCell>
-                  <TableCell>{inv.client.fullName}</TableCell>
-                  <TableCell>{inv.fournisseur.fullName}</TableCell>
-                  <TableCell>{inv.items.length}</TableCell>
-                  <TableCell>{inv.totalHT}</TableCell>
-                  <TableCell>{inv.totalTVA}</TableCell>
-                  <TableCell>{inv.totalTTC}</TableCell>
-                  <TableCell>{inv.discountAmount}</TableCell>
-                  <TableCell>{inv.chauffeurName}</TableCell>
-                  <TableCell>{inv.chauffeurPhone}</TableCell>
-                  <TableCell>{inv.transportLicense}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleView(inv)}
-                      >
-                        <FaEye />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        disabled={deletingId === inv.id}
-                        onClick={() => handleDelete(inv.id)}
-                      >
-                        <FaTrash />
-                      </Button>
-                    </div>
-                  </TableCell>
+          <div className="min-w-[900px] md:min-w-full">
+            <Table className="text-xs md:text-sm">
+              <TableHeader className="bg-blue-50">
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Client</TableHead>
+                  <TableHead>Fournisseur</TableHead>
+                  <TableHead>Articles</TableHead>
+                  <TableHead>Total HT</TableHead>
+                  <TableHead>Total TVA</TableHead>
+                  <TableHead>Total TTC</TableHead>
+                  <TableHead>Remise</TableHead>
+                  <TableHead>Chauffeur</TableHead>
+                  <TableHead>Téléphone</TableHead>
+                  <TableHead>Plaque</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredInvoices.map((inv, index) => (
+                  <TableRow
+                    key={inv.id}
+                    className="hover:bg-blue-50 transition-colors"
+                  >
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{inv.date}</TableCell>
+                    <TableCell>{inv.invoiceType}</TableCell>
+                    <TableCell>{inv.client.fullName}</TableCell>
+                    <TableCell>{inv.fournisseur.fullName}</TableCell>
+                    <TableCell>{inv.items.length}</TableCell>
+                    <TableCell>{inv.totalHT}</TableCell>
+                    <TableCell>{inv.totalTVA}</TableCell>
+                    <TableCell>{inv.totalTTC}</TableCell>
+                    <TableCell>{inv.discountAmount}</TableCell>
+                    <TableCell>{inv.chauffeurName}</TableCell>
+                    <TableCell>{inv.chauffeurPhone}</TableCell>
+                    <TableCell>{inv.transportLicense}</TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleView(inv)}
+                        >
+                          <FaEye />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          disabled={deletingId === inv.id}
+                          onClick={() => handleDelete(inv.id)}
+                        >
+                          <FaTrash />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </div>
 
@@ -232,7 +232,7 @@ const InvoicesPage: React.FC = () => {
         isOpen={openInvoiceModal}
         onClose={() => {
           setOpenInvoiceModal(false);
-          fetchInvoices(); // Refresh after adding
+          fetchInvoices();
         }}
       />
       {selectedInvoice && (

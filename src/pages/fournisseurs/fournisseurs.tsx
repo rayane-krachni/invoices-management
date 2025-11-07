@@ -117,7 +117,7 @@ const FournisseurPage = () => {
     <div className="flex flex-col gap-3">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
-        <h1 className="text-xl font-bold text-purple-700 text-center md:text-left">
+        <h1 className="text-xl font-bold text-blue-700 text-center md:text-left">
           Liste des fournisseurs
         </h1>
 
@@ -125,14 +125,14 @@ const FournisseurPage = () => {
           <input
             type="text"
             placeholder="Rechercher un fournisseur..."
-            className="border placeholder:text-sm rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border placeholder:text-sm rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
           <Button
             variant="outline"
-            className="w-full sm:w-auto py-3 font-semibold bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto py-3 font-semibold bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2"
             onClick={() => setOpenAddFournisseurModal(true)}
           >
             <FaFileInvoice /> Créer un fournisseur
@@ -148,7 +148,7 @@ const FournisseurPage = () => {
       ) : (
         <div className="overflow-x-auto rounded-lg shadow-md border">
           <Table className="min-w-full">
-            <TableHeader className="bg-purple-50">
+            <TableHeader className="bg-blue-50">
               <TableRow>
                 <TableHead>#</TableHead>
                 <TableHead>Nom complet</TableHead>
@@ -165,7 +165,7 @@ const FournisseurPage = () => {
               {filteredFournisseurs.map((fournisseur, index) => (
                 <TableRow
                   key={fournisseur.id}
-                  className="hover:bg-purple-50 transition-colors"
+                  className="hover:bg-blue-50 transition-colors"
                 >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">{fournisseur.fullName}</TableCell>
@@ -183,7 +183,7 @@ const FournisseurPage = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => handleView(fournisseur)}
-                        className="hover:bg-purple-100"
+                        className="hover:bg-blue-100"
                       >
                         <FaEye />
                       </Button>
@@ -191,7 +191,7 @@ const FournisseurPage = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => handleEdit(fournisseur)}
-                        className="hover:bg-purple-100"
+                        className="hover:bg-blue-100"
                       >
                         <FaEdit />
                       </Button>

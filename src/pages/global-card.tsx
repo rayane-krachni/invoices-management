@@ -17,7 +17,7 @@ export function GlobalCard({
 		<div className={className}>
 			<Card>
 				<CardHeader className="text-center">
-					<CardTitle className="text-2xl">{title}</CardTitle>
+					<CardTitle className="text-4xl uppercase fon-bold">{title}</CardTitle>
 					<CardDescription className="w-full mx-auto">
 						{description}
 					</CardDescription>

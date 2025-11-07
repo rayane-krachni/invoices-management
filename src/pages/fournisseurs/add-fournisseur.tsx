@@ -99,7 +99,7 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
           <FaTimes />
         </button>
 
-        <h2 className="text-2xl font-bold mb-4 text-purple-700">Créer un fournisseur</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Créer un fournisseur</h2>
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -181,7 +181,7 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
 
           <button
             type="submit"
-            className="bg-purple-600 text-white font-bold px-4 py-2 rounded shadow hover:bg-purple-700 w-full md:w-auto"
+            className="bg-blue-600 text-white font-bold px-4 py-2 rounded shadow hover:bg-blue-700 w-full md:w-auto"
           >
             {createFournisseurMutation.status === "pending"
               ? "Création..."

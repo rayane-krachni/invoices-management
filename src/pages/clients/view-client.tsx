@@ -28,8 +28,8 @@ export const ViewClientModal: React.FC<ViewClientModalProps> = ({
 
         {/* Header Section */}
         <div className="flex flex-col items-center mb-2">
-          <FaUserCircle className="text-purple-600 text-6xl mb-2" />
-          <h2 className="text-3xl font-bold text-purple-700 mb-1">Détails du Client</h2>
+          <FaUserCircle className="text-blue-600 text-6xl mb-2" />
+          <h2 className="text-3xl font-bold text-blue-700 mb-1">Détails du Client</h2>
           <p className="text-gray-500 text-sm">Informations enregistrées dans le système</p>
         </div>
 
@@ -56,7 +56,7 @@ export const ViewClientModal: React.FC<ViewClientModalProps> = ({
         <div className="flex justify-end mt-2">
           <button
             onClick={onClose}
-            className="bg-purple-600 text-white px-5 py-2 rounded-lg font-semibold shadow hover:bg-purple-700 transition"
+            className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition"
           >
             Fermer
           </button>

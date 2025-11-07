@@ -91,14 +91,14 @@ const ProductsPage = () => {
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <h1 className="text-2xl font-bold text-gray-800">📦 Liste des produits</h1>
 
-        <div className="flex flex-row gap-2 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <input
             type="text"
             placeholder="Rechercher un produit..."
-            className="border rounded-md px-3 py-2 text-sm w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder:text-gray-400"
+            className="border rounded-md px-3 py-2 text-sm w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400"
           />
           <Button
-            className="w-full md:w-auto py-3 font-semibold bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center gap-2"
+            className="w-full md:w-auto py-3 font-semibold bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2"
             onClick={() => setOpenAddProductModal(true)}
           >
             <FaPlus /> Créer un produit
@@ -107,14 +107,14 @@ const ProductsPage = () => {
       </div>
 
       {/* Table Section */}
-      <div className="bg-white rounded-xl shadow-lg border border-purple-100 w-full overflow-hidden">
+      <div className="bg-white rounded-xl shadow-lg border border-blue-100 w-full overflow-hidden">
         {loading ? (
           <p className="text-center py-8 text-gray-500">Chargement des produits...</p>
         ) : products.length === 0 ? (
           <p className="text-center py-8 text-gray-500">Aucun produit trouvé.</p>
         ) : (
           <Table>
-            <TableHeader className="bg-purple-50">
+            <TableHeader className="bg-blue-50">
               <TableRow>
                 <TableHead className="text-gray-700 font-semibold">Date</TableHead>
                 <TableHead className="text-gray-700 font-semibold">ID</TableHead>
@@ -128,7 +128,7 @@ const ProductsPage = () => {
 
             <TableBody>
               {products.map((product) => (
-                <TableRow key={product.id} className="hover:bg-purple-50 transition-colors">
+                <TableRow key={product.id} className="hover:bg-blue-50 transition-colors">
                   <TableCell>{new Date().toLocaleDateString("fr-FR")}</TableCell>
                   <TableCell>{product.id}</TableCell>
                   <TableCell>{product.code}</TableCell>
@@ -140,15 +140,15 @@ const ProductsPage = () => {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="hover:bg-purple-100"
+                        className="hover:bg-blue-100"
                         onClick={() => handleView(product)}
                       >
-                        <FaEye className="text-purple-600" />
+                        <FaEye className="text-blue-600" />
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        className="hover:bg-purple-100"
+                        className="hover:bg-blue-100"
                         onClick={() => handleEdit(product)}
                       >
                         <FaEdit className="text-blue-600" />

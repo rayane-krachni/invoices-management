@@ -192,7 +192,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
           <FaTimes />
         </button>
 
-        <h2 className="text-2xl font-bold mb-4 text-purple-700">Créer une facture</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Créer une facture</h2>
 
         {loading ? (
           <p>Chargement...</p>
@@ -326,7 +326,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
 
             {/* Articles */}
             <fieldset className="border rounded p-4">
-              <legend className="font-semibold text-purple-700">Articles</legend>
+              <legend className="font-semibold text-blue-700">Articles</legend>
 
               <div className="mb-3">
                 <select
@@ -387,7 +387,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                 <p><strong>Total TVA:</strong> {totals.totalTVA.toFixed(2)} {model.currency}</p>
                 <p><strong>Timbre:</strong> {totals.timbre.toFixed(2)} {model.currency}</p>
                 <p><strong>Remise:</strong> -{totals.discount.toFixed(2)} {model.currency}</p>
-                <p className="font-bold text-lg text-purple-700">
+                <p className="font-bold text-lg text-blue-700">
                   <strong>Total TTC:</strong> {totals.totalTTC.toFixed(2)} {model.currency}
                 </p>
               </div>
@@ -397,7 +397,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="bg-purple-600 text-white font-bold px-6 py-2 rounded hover:bg-purple-700"
+                className="bg-blue-600 text-white font-bold px-6 py-2 rounded hover:bg-blue-700"
               >
                 Créer la facture
               </button>

@@ -14,6 +14,7 @@ import UpdateClientModal, { ClientModel } from "./update-client";
 import ViewClientModal from "./view-client";
 import { deleteClientServerFn, loadClientsServerFn } from "@/server/client-fn";
 import { toast } from "sonner";
+import { useLoadClients } from "@/hooks/useLodaClient";
 
 const ClientsPage = () => {
   const [openAddClientModal, setOpenAddClientModal] = useState(false);
@@ -26,6 +27,8 @@ const ClientsPage = () => {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { loadClients } = useLoadClients();
 
   async function fetchClients() {
     setLoading(true);
@@ -117,7 +120,7 @@ const ClientsPage = () => {
     <div className="flex flex-col gap-3">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
-        <h1 className="text-xl font-bold text-purple-700 text-center md:text-left">
+        <h1 className="text-xl font-bold text-blue-700 text-center md:text-left">
           Liste des fournisseurs
         </h1>
 
@@ -125,17 +128,25 @@ const ClientsPage = () => {
           <input
             type="text"
             placeholder="Rechercher un client..."
-            className="border placeholder:text-sm rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="border placeholder:text-sm rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
           <Button
             variant="outline"
-            className="w-full sm:w-auto py-3 font-semibold bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto py-3 font-semibold bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2"
             onClick={() => setOpenAddClientModal(true)}
           >
             <FaFileInvoice /> Créer un fournisseur
+          </Button>
+           <Button
+            variant="outline"
+            className="w-full sm:w-auto py-3 font-semibold bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2"
+            onClick={() =>{loadClients()}}
+            // {loadClients()}
+          >
+            <FaFileInvoice />import fornisseurs
           </Button>
         </div>
       </div>
@@ -148,7 +159,7 @@ const ClientsPage = () => {
       ) : (
         <div className="overflow-x-auto rounded-lg shadow-md border">
           <Table className="min-w-full">
-            <TableHeader className="bg-purple-50">
+            <TableHeader className="bg-blue-50">
               <TableRow>
                 <TableHead>#</TableHead>
                 <TableHead>Nom complet</TableHead>
@@ -163,7 +174,7 @@ const ClientsPage = () => {
             </TableHeader>
             <TableBody>
               {filteredClients.map((client, index) => (
-                <TableRow key={client.id} className="hover:bg-purple-50 transition">
+                <TableRow key={client.id} className="hover:bg-blue-50 transition">
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">{client.fullName}</TableCell>
                   <TableCell>{client.phone}</TableCell>
@@ -178,7 +189,7 @@ const ClientsPage = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => handleView(client)}
-                        className="hover:bg-purple-100"
+                        className="hover:bg-blue-100"
                       >
                         <FaEye />
                       </Button>
@@ -186,7 +197,7 @@ const ClientsPage = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => handleEdit(client)}
-                        className="hover:bg-purple-100"
+                        className="hover:bg-blue-100"
                       >
                         <FaEdit />
                       </Button>

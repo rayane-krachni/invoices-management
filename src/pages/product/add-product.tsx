@@ -67,7 +67,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
         </button>
 
         {/* Title */}
-        <h2 className="text-2xl font-bold mb-4 text-purple-700">Créer un produit</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Créer un produit</h2>
 
         {/* Form */}
         <form onSubmit={onSubmit} className="space-y-4">
@@ -129,7 +129,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
           <button
             type="submit"
             disabled={createProductMutation.status === "pending"}
-            className="bg-purple-600 text-white font-bold px-4 py-2 rounded shadow hover:bg-purple-700 w-full md:w-auto"
+            className="bg-blue-600 text-white font-bold px-4 py-2 rounded shadow hover:bg-blue-700 w-full md:w-auto"
           >
             {createProductMutation.status === "pending"
               ? "Création..."
