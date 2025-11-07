@@ -140,14 +140,14 @@ const ClientsPage = () => {
           >
             <FaFileInvoice /> Créer un fournisseur
           </Button>
-           <Button
+           {/* <Button
             variant="outline"
             className="w-full sm:w-auto py-3 font-semibold bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2"
             onClick={() =>{loadClients()}}
             // {loadClients()}
           >
             <FaFileInvoice />import fornisseurs
-          </Button>
+          </Button> */}
         </div>
       </div>
 
