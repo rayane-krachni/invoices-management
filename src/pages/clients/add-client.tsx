@@ -115,11 +115,7 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose,
     if (!model.fullName.trim()) newErrors.fullName = "Le nom complet est requis.";
     if (!model.address.trim()) newErrors.address = "L’adresse est requise.";
     if (!model.willaya.trim()) newErrors.willaya = "La wilaya est requise.";
-    if (!model.phone.trim()) {
-      newErrors.phone = "Le numéro de téléphone est requis.";
-    } else if (!/^\d{10}$/.test(model.phone)) {
-      newErrors.phone = "Le numéro doit contenir 10 chiffres.";
-    }
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -195,20 +191,7 @@ export const AddClientModal: React.FC<AddClientModalProps> = ({ isOpen, onClose,
               {errors.willaya && <p className="text-red-500 text-sm">{errors.willaya}</p>}
             </div>
 
-            {/* Phone */}
-            <div>
-              <label className="block font-medium">Téléphone *</label>
-              <input
-                type="text"
-                value={model.phone}
-                onChange={(e) => updateField("phone", e.target.value)}
-                className={`mt-1 w-full border rounded px-2 py-1 ${
-                  errors.phone ? "border-red-500" : ""
-                }`}
-              />
-              {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
-            </div>
-
+         
             {/* Optional fields */}
             <div>
               <label className="block font-medium">Activité</label>
