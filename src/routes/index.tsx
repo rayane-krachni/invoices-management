@@ -26,7 +26,7 @@ function App() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (username === "Krachni lahcen" && password === "lahcenAdmin") {
+    if (username === "admin" && password === "admin123") {
       // ✅ Save auth state to local storage
       const userData = { username, isAuthenticated: true };
       localStorage.setItem("authUser", JSON.stringify(userData));
