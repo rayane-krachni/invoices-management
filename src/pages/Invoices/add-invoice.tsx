@@ -6,6 +6,7 @@ import { loadFournisseursServerFn } from "@/server/fourniseur-fn";
 import { loadProductsServerFn } from "@/server/product-fn";
 import { createInvoiceServerFn } from "@/server/invoices-fn";
 import { NewInvoice, NewInvoiceItem } from "@/db/schema";
+import { Divide } from "lucide-react";
 
 export interface InvoiceLineItem {
   id: string;
@@ -67,7 +68,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
     currency: "DZD",
     items: [],
     discountAmount: 0,
-    paymentMode:"Cheque"
+    paymentMode: "Cheque"
   });
 
   const [clients, setClients] = useState<{ id: string; fullName: string }[]>([]);
@@ -203,10 +204,31 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
               createInvoiceMutation.mutate(model);
             }}
             className="space-y-5"
-          >
+          >             <h1 className="text-blue-600 font-bold text-2Xl">Details du facture</h1>
+            <div className="border border-2"/>
             {/* Invoice metadata */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
+
+
+              {/* <div>
+                <label className="block font-medium">Mode de paiment</label>
+                <select
+                  className="mt-1 w-full border rounded px-2 py-1"
+                  value={model.paymentMode}
+                  onChange={(e) => updateField("paymentMode", e.target.value)}
+                >
+                  <option value="">Sélectionner le mode de paiement</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div> */}
+            </div>
+
+            {/* Client & Fournisseur with search */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div >
                 <label className="block font-medium">Type de facture</label>
                 <select
                   className="mt-1 w-full border rounded px-2 py-1"
@@ -220,26 +242,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                   <option value="Bon de Transfert">Bon de Transfert</option>
                 </select>
               </div>
-
-              <div>
-                <label className="block font-medium">Mode de paiment</label>
-                <select
-                  className="mt-1 w-full border rounded px-2 py-1"
-                  value={model.paymentMode}
-                  onChange={(e) => updateField("paymentMode", e.target.value)}
-                >
-                  <option value="">Sélectionner le mode de paiement</option>
-                  <option value="Cash">Cash</option>
-                  <option value="Cheque">Cheque</option>
-                  <option value="Bank Transfer">Bank Transfer</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Client & Fournisseur with search */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+             <div >
                 <label className="block font-medium">Client</label>
                 <div className="relative">
                   <FaSearch className="absolute left-2 top-3 text-gray-400" />
@@ -266,7 +269,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                 </select>
               </div>
 
-              <div>
+              <div >
                 <label className="block font-medium">Fournisseur</label>
                 <div className="relative">
                   <FaSearch className="absolute left-2 top-3 text-gray-400" />
@@ -293,6 +296,9 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
               </div>
             </div>
 
+            <h1 className="text-blue-600 font-bold text-2Xl">Chauffeur & Transport</h1>
+            <div className="border border-2"/>
+
             {/* Chauffeur & Transport */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
@@ -300,6 +306,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                 <input
                   type="text"
                   className="mt-1 w-full border rounded px-2 py-1"
+                  placeholder="Entrer le nom de chauffeur"
                   value={model.chauffeurName || ""}
                   onChange={(e) => updateField("chauffeurName", e.target.value)}
                 />
@@ -308,6 +315,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                 <label className="block font-medium">Téléphone du chauffeur</label>
                 <input
                   type="tel"
+                   placeholder="Entrer le numero de chauffeur"
                   className="mt-1 w-full border rounded px-2 py-1"
                   value={model.chauffeurPhone || ""}
                   onChange={(e) => updateField("chauffeurPhone", e.target.value)}
@@ -319,10 +327,14 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                   type="text"
                   className="mt-1 w-full border rounded px-2 py-1"
                   value={model.transportLicense || ""}
+                  placeholder="Entrer la plaque de transport"
                   onChange={(e) => updateField("transportLicense", e.target.value)}
                 />
               </div>
             </div>
+
+             <h1 className="text-blue-600 font-bold text-2Xl">Produits</h1>
+            <div className="border border-2"/>
 
             {/* Articles */}
             <fieldset className="border rounded p-4">
@@ -368,25 +380,17 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
             </fieldset>
 
             {/* Discount + Totals */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-              <div>
-                <label className="block font-medium">Montant de la remise (remise en DZD)</label>
-                <input
-                  type="number"
-                  min={0}
-                  step={0.01}
-                  className="mt-1 w-full border rounded px-2 py-1"
-                  value={model.discountAmount ?? 0}
-                  onChange={(e) => updateField("discountAmount", Number(e.target.value))}
-                />
-                <p className="text-sm text-gray-500 mt-1">Entrez un montant si vous voulez appliquer une remise fixe.</p>
-              </div>
+            <div className="flex flex-col justify-end items-end">
 
-              <div className="text-right space-y-1">
+
+              <div className="flex flex-row justify-between gap-3  text-right space-y-1">
                 <p><strong>Total Net HT:</strong> {totals.totalHT.toFixed(2)} {model.currency}</p>
                 <p><strong>Total TVA:</strong> {totals.totalTVA.toFixed(2)} {model.currency}</p>
+                
+              </div>
+
+              <div className="flex flex-row justify-between gap-3 text-right space-y-1">
                 <p><strong>Timbre:</strong> {totals.timbre.toFixed(2)} {model.currency}</p>
-                <p><strong>Remise:</strong> -{totals.discount.toFixed(2)} {model.currency}</p>
                 <p className="font-bold text-lg text-blue-700">
                   <strong>Total TTC:</strong> {totals.totalTTC.toFixed(2)} {model.currency}
                 </p>
@@ -397,9 +401,11 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
             <div className="flex justify-end">
               <button
                 type="submit"
+                disabled={createInvoiceMutation.status === "pending"}
                 className="bg-blue-600 text-white font-bold px-6 py-2 rounded hover:bg-blue-700"
               >
-                Créer la facture
+
+                {createInvoiceMutation.status === "pending" ? "Création..." : "Créer la facture"}
               </button>
             </div>
           </form>
