@@ -119,7 +119,7 @@ const ClientsPage = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
         <h1 className="text-xl font-bold text-blue-700 text-center md:text-left">
-          Liste des fournisseurs
+          Liste des clients
         </h1>
 
         <div className="flex flex-col sm:flex-row w-full md:w-auto gap-2">
@@ -136,7 +136,7 @@ const ClientsPage = () => {
             className="w-full sm:w-auto py-3 font-semibold bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center gap-2"
             onClick={() => setOpenAddClientModal(true)}
           >
-            <FaFileInvoice /> Créer un fournisseur
+            <FaFileInvoice /> Créer un client
           </Button>
            {/* <Button
             variant="outline"

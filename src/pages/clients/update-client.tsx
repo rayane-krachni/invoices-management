@@ -100,8 +100,8 @@ const updateClientMutation = useMutation<
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.keys(model).map((key) => (
-              <div key={key}>
-                <label className="block font-medium">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+              key != "phone" && <div key={key}>
+                <label className="block font-medium">{key}</label>
                 <input
                   type="text"
                   value={model[key as keyof ClientUpdateModel] || ""}
