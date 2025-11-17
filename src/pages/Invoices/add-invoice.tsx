@@ -48,7 +48,7 @@ const calculateInvoiceTotals = (invoice: InvoiceCreateModel) => {
   const totalHT = lines.reduce((s, l) => s + l.base, 0);
   const totalTVA = lines.reduce((s, l) => s + l.tax, 0);
   const discount = invoice.discountAmount ?? 0;
-  const timbre = TIMBRE_AMOUNT;
+  const timbre = 0;
   const totalTTC = Math.max(0, totalHT + totalTVA + timbre - discount);
   return { totalHT, totalTVA, discount, timbre, totalTTC };
 };
@@ -390,7 +390,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
               </div>
 
               <div className="flex flex-row justify-between gap-3 text-right space-y-1">
-                <p><strong>Timbre:</strong> {totals.timbre.toFixed(2)} {model.currency}</p>
+              
                 <p className="font-bold text-lg text-blue-700">
                   <strong>Total TTC:</strong> {totals.totalTTC.toFixed(2)} {model.currency}
                 </p>
