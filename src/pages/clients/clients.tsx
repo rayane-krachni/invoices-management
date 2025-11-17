@@ -40,7 +40,6 @@ const ClientsPage = () => {
         fullName: client.fullName,
         address: client.address,
         willaya: client.willaya,
-        phone: client.phone,
         activity: client.activity ?? undefined,
         art: client.art ?? undefined,
         nis: client.nis ?? undefined,
@@ -67,7 +66,6 @@ const ClientsPage = () => {
     const results = clients.filter(
       (c) =>
         c.fullName?.toLowerCase().includes(term) ||
-        c.phone?.toLowerCase().includes(term) ||
         c.address?.toLowerCase().includes(term) ||
         c.willaya?.toLowerCase().includes(term) ||
         c.art?.toLowerCase().includes(term) ||
@@ -163,7 +161,6 @@ const ClientsPage = () => {
               <TableRow>
                 <TableHead>#</TableHead>
                 <TableHead>Nom complet</TableHead>
-                <TableHead>Téléphone</TableHead>
                 <TableHead>Adresse / Wilaya</TableHead>
                 <TableHead>Art</TableHead>
                 <TableHead>NIS</TableHead>
@@ -177,7 +174,6 @@ const ClientsPage = () => {
                 <TableRow key={client.id} className="hover:bg-blue-50 transition">
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">{client.fullName}</TableCell>
-                  <TableCell>{client.phone}</TableCell>
                   <TableCell>{client.address} / {client.willaya}</TableCell>
                   <TableCell>{client.art}</TableCell>
                   <TableCell>{client.nis}</TableCell>

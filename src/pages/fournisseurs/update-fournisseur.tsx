@@ -8,7 +8,6 @@ export interface FournisseurModel {
   fullName: string;
   address: string;
   willaya: string;
-  phone: string;
   activity?: string;
   art?: string;
   nis?: string;
@@ -54,7 +53,6 @@ const updateFournisseurMutation = useMutation<
           fullName: data.fullName,
           address: data.address,
           willaya: data.willaya,
-          phone: data.phone,
           activity: data.activity ?? "",
           art: data.art ?? "",
           nis: data.nis ?? "",
@@ -108,7 +106,7 @@ const updateFournisseurMutation = useMutation<
           <FaTimes />
         </button>
 
-        <h2 className="text-2xl font-bold mb-4 text-blue-700">Mettre à jour le client</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">Mettre à jour le fournisseur</h2>
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

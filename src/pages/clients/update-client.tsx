@@ -9,7 +9,6 @@ export interface ClientModel {
   fullName: string;
   address: string;
   willaya: string;
-  phone: string;
   activity?: string;
   art?: string;
   nis?: string;
@@ -55,7 +54,6 @@ const updateClientMutation = useMutation<
           fullName: data.fullName,
           address: data.address,
           willaya: data.willaya,
-          phone: data.phone,
           activity: data.activity,
           art: data.art,
           nis: data.nis,

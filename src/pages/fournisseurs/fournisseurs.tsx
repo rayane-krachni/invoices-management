@@ -37,7 +37,6 @@ const FournisseurPage = () => {
         fullName: fournisseur.fullName,
         address: fournisseur.address,
         willaya: fournisseur.willaya,
-        phone: fournisseur.phone,
         activity: fournisseur.activity ?? undefined,
         art: fournisseur.art ?? undefined,
         nis: fournisseur.nis ?? undefined,
@@ -64,7 +63,6 @@ const FournisseurPage = () => {
     const results = fournisseurs.filter(
       (f) =>
         f.fullName?.toLowerCase().includes(term) ||
-        f.phone?.toLowerCase().includes(term) ||
         f.address?.toLowerCase().includes(term) ||
         f.willaya?.toLowerCase().includes(term) ||
         f.art?.toLowerCase().includes(term) ||
@@ -152,7 +150,6 @@ const FournisseurPage = () => {
               <TableRow>
                 <TableHead>#</TableHead>
                 <TableHead>Nom complet</TableHead>
-                <TableHead>Téléphone</TableHead>
                 <TableHead>Adresse / Wilaya</TableHead>
                 <TableHead>Art</TableHead>
                 <TableHead>NIS</TableHead>
@@ -169,7 +166,6 @@ const FournisseurPage = () => {
                 >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">{fournisseur.fullName}</TableCell>
-                  <TableCell>{fournisseur.phone}</TableCell>
                   <TableCell>
                     {fournisseur.address} / {fournisseur.willaya}
                   </TableCell>
