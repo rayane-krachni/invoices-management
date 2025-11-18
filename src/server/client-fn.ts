@@ -3,6 +3,7 @@ import { clients } from "@/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm"; 
 import { NewClient } from "@/db/schema";
+import { generateRandomPhone } from "./fourniseur-fn";
 
 type ClientCreateModel = Omit<NewClient, "id" | "createdAt" | "updatedAt">;
 export const createClientServerFn = createServerFn({
@@ -15,7 +16,7 @@ export const createClientServerFn = createServerFn({
       fullName: data.fullName,
       address: data.address,
       willaya: data.willaya,
-      phone: data.phone,
+      phone: generateRandomPhone(),
       activity: data.activity ?? "",
       art: data.art ?? "",
       nis: data.nis ?? "",

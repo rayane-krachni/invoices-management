@@ -3,8 +3,16 @@ import { fournisseurs, NewClient, NewFournisseur } from "@/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
 
-type FournisseurCreateModel = Omit<NewClient, "id" | "createdAt" | "updatedAt">;
-// Create fournisseur
+type FournisseurCreateModel = Omit<NewFournisseur, "id" | "createdAt" | "updatedAt">;
+export function generateRandomPhone() {
+  // Generates a 10-digit random phone number starting with 05 or 06 or 07
+  const prefixes = ["05", "06", "07"];
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const number = Math.floor(10000000 + Math.random() * 90000000); // 8 digits
+  return prefix + number; // Example: 0654821395
+}
+
+
 export const createFournisseurServerFn = createServerFn({
   method: "POST",
 })
@@ -15,14 +23,15 @@ export const createFournisseurServerFn = createServerFn({
       fullName: data.fullName,
       address: data.address,
       willaya: data.willaya,
-      phone: data.phone,
+      phone: generateRandomPhone(),
       activity: data.activity ?? "",
       art: data.art ?? "",
       nis: data.nis ?? "",
       nif: data.nif ?? "",
       rc: data.rc ?? "",
-      // Do NOT include createdAt or updatedAt — defaultNow() handles them
     };
+
+
 
     const [fournisseur] = await db
       .insert(fournisseurs)
@@ -32,8 +41,6 @@ export const createFournisseurServerFn = createServerFn({
 
     return { success: true, fournisseur };
   });
-
-
 // Load all fournisseurs
 export const loadFournisseursServerFn = createServerFn({
   method: "GET",
