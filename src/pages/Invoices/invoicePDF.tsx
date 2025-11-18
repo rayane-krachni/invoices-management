@@ -551,7 +551,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                         </View>
                         <View style={[styles.totalRow, styles.totalFinalRow]}>
                             <Text style={styles.totalFinalLabel}>TOTAL TTC</Text>
-                            <Text style={styles.totalFinalValue}>{invoice.totalHT * invoice.totalTVA} DA</Text>
+                            <Text style={styles.totalFinalValue}>{invoice.totalTTC} DA</Text>
                         </View>
 
                     </View>
