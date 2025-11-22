@@ -19,7 +19,7 @@ export const ViewInvoiceModal: React.FC<ViewInvoiceModalProps> = ({ isOpen, invo
   // Memoize PDF document to prevent multiple renders
   const pdfDocument = useMemo(() => <InvoicePDF invoice={invoice} />, [invoice]);
 
-  console.log("Rendering PDF for item:", invoice.items);
+  console.log("Rendering PDF for item:", invoice);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

@@ -1,50 +1,92 @@
 // components/InvoicePDF.tsx
 import React from 'react';
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
+import logo from '../../assets/logo.jpeg'
+const UNITS = [
+  "zéro","un","deux","trois","quatre","cinq","six","sept","huit","neuf"
+];
 
-// Convert numbers to French words (supports up to 999,999)
-const UNITS = ["zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf"];
-const TEENS = ["dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
-const TENS = ["", "", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante-dix", "quatre-vingt", "quatre-vingt-dix"];
+const TEENS = [
+  "dix","onze","douze","treize","quatorze",
+  "quinze","seize","dix-sept","dix-huit","dix-neuf"
+];
 
-const numberToFrench = (n: number): string => {
-    if (n < 10) return UNITS[n];
-    if (n < 20) return TEENS[n - 10];
-    if (n < 100) {
-        const ten = Math.floor(n / 10);
-        let unit = n % 10;
-        if (ten === 7 || ten === 9) unit += 10;
-        let tenWord = TENS[ten];
-        if (ten === 7) tenWord = "soixante";
-        if (ten === 9) tenWord = "quatre-vingt";
-        if (unit === 1 && ten !== 8) return tenWord + "-et-un";
-        return unit > 0 ? tenWord + "-" + numberToFrench(unit) : tenWord;
-    }
-    if (n < 1000) {
-        const hundreds = Math.floor(n / 100);
-        const rest = n % 100;
-        const hundredWord = hundreds > 1 ? UNITS[hundreds] + " cent" : "cent";
-        return rest > 0 ? hundredWord + " " + numberToFrench(rest) : hundredWord;
-    }
-    if (n < 1000000) {
-        const thousands = Math.floor(n / 1000);
-        const rest = n % 1000;
-        const thousandWord = thousands > 1 ? numberToFrench(thousands) + " mille" : "mille";
-        return rest > 0 ? thousandWord + " " + numberToFrench(rest) : thousandWord;
-    }
-    return n.toString();
-};
+const TENS = [
+  "","",
+  "vingt","trente","quarante","cinquante","soixante",
+  "soixante","quatre-vingt","quatre-vingt"
+];
 
-const amountToFrenchWords = (amount: number | string) => {
-    const num = Number(amount) || 0;
-    const integerPart = Math.floor(num);
-    const decimalPart = Math.round((num - integerPart) * 100);
+function numberBelow100(n: number): string {
+  if (n < 10) return UNITS[n];
+  if (n < 20) return TEENS[n - 10];
 
-    if (decimalPart === 0) {
-        return `${numberToFrench(integerPart)} dinars algériens`;
-    }
-    return `${numberToFrench(integerPart)} dinars et ${numberToFrench(decimalPart)} centimes`;
-};
+  const ten = Math.floor(n / 10);
+  let unit = n % 10;
+
+  let base = TENS[ten];
+
+  if (ten === 7 || ten === 9) {
+    unit += 10;
+  }
+
+  if (unit === 0) return base;
+  if (unit === 1 && ten !== 8) return base + "-et-un";
+
+  return base + "-" + numberBelow100(unit);
+}
+
+function numberBelow1000(n: number): string {
+  if (n < 100) return numberBelow100(n);
+
+  const hundreds = Math.floor(n / 100);
+  const rest = n % 100;
+
+  let result = "";
+
+  if (hundreds === 1) result = "cent";
+  else result = UNITS[hundreds] + " cent";
+
+  if (rest === 0) return result;
+  return result + " " + numberBelow100(rest);
+}
+
+function numberToFrench(n: number): string {
+  if (n < 1000) return numberBelow1000(n);
+  if (n < 1_000_000) {
+    const thousands = Math.floor(n / 1000);
+    const rest = n % 1000;
+
+    const thousandWord =
+      thousands === 1 ? "mille" : numberBelow1000(thousands) + " mille";
+
+    return rest === 0 ? thousandWord : thousandWord + " " + numberBelow1000(rest);
+  }
+
+  if (n < 1_000_000_000) {
+    const millions = Math.floor(n / 1_000_000);
+    const rest = n % 1_000_000;
+
+    const millionWord =
+      millions === 1 ? "un million" : numberBelow1000(millions) + " millions";
+
+    return rest === 0 ? millionWord : millionWord + " " + numberToFrench(rest);
+  }
+
+  return n.toString(); // too large
+}
+
+export function amountToFrenchWords(amount: number | string): string {
+  const num = Number(amount) || 0;
+  const integerPart = Math.floor(num);
+  const decimalPart = Math.round((num - integerPart) * 100);
+
+  if (decimalPart === 0)
+    return `${numberToFrench(integerPart)} dinars algériens`;
+
+  return `${numberToFrench(integerPart)} dinars et ${numberToFrench(decimalPart)} centimes`;
+}
+
 
 const styles = StyleSheet.create({
     page: {
@@ -58,7 +100,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 5,
         paddingBottom: 15,
         borderBottomWidth: 2,
         borderBottomColor: '#4A5568',
@@ -93,7 +135,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 10,
+        marginBottom: 5,
         color: '#2D3748',
     },
     // Info Bar
@@ -102,7 +144,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#F7FAFC',
         padding: 10,
-        marginBottom: 10,
+        marginBottom: 5,
         borderLeftWidth: 3,
         borderLeftColor: '#4A5568',
     },
@@ -133,7 +175,7 @@ const styles = StyleSheet.create({
     partiesContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginBottom: 5,
     },
     partyBox: {
         width: '48%',
@@ -197,8 +239,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#2D3748',
         marginTop: 15,
-        marginBottom: 8,
-        paddingBottom: 5,
+        marginBottom: 2,
+        paddingBottom: 1,
         borderBottomWidth: 1,
         borderBottomColor: '#E2E8F0',
     },
@@ -207,16 +249,16 @@ const styles = StyleSheet.create({
         width: '100%',
         borderWidth: 1,
         borderColor: '#E2E8F0',
-        marginTop: 5,
-        marginBottom: 10,
+        marginTop: 2,
+        marginBottom: 2,
     },
     tableHeader: {
         flexDirection: 'row',
-         backgroundColor: '#EDF2F7',
+        backgroundColor: '#EDF2F7',
         color: '#FFFFFF',
     },
     tableHeaderCell: {
-        padding: 8,
+        padding: 7,
         fontSize: 8,
         fontWeight: 'bold',
         color: '#0b0b0bff',
@@ -237,17 +279,17 @@ const styles = StyleSheet.create({
     },
     // Column widths
     colCode: { width: '10%' },
-    colProduct: { width: '20%' },
+    colProduct: { width: '35%' },
     colDescription: { width: '25%' },
     colQty: { width: '10%', textAlign: 'center' },
-    colPrice: { width: '12%', textAlign: 'right' },
+    colPrice: { width: '20%', textAlign: 'right' },
     colTax: { width: '10%', textAlign: 'center' },
     colTotalHT: { width: '13%', textAlign: 'right', borderRightWidth: 0 },
     // Totals Section
     totalsContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        marginTop: 10,
+        marginTop: 4,
     },
     totalsBox: {
         width: '45%',
@@ -335,7 +377,7 @@ const styles = StyleSheet.create({
         fontSize: 9,
         fontWeight: 'bold',
         color: '#4A5568',
-        marginBottom: 30,
+        marginBottom: 15,
     },
     letterTitle: {
         fontSize: 9,
@@ -378,12 +420,27 @@ const styles = StyleSheet.create({
 interface InvoicePDFProps {
     invoice: any & { items?: any[] };
 }
+const formatNumber = (num: number | string, length: number = 5) => {
+  const cleaned = Number(String(num || 0).replace("#", ""));
+  return String(cleaned).padStart(length, "0");
+};
+
 
 export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
-    const formatDate = (date?: Date | string) => {
-        if (!date) return '-';
-        return new Date(date).toLocaleDateString('fr-FR');
-    };
+const formatDate = (date: any) => {
+  if (!date) return "";
+
+  const d = new Date(date);
+
+  if (isNaN(d.getTime())) return ""; // Prevent "Invalid Date"
+
+  return d.toLocaleDateString("fr-FR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+};
+
 
     return (
         <Document>
@@ -398,9 +455,12 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                             {invoice.fournisseur?.activity || 'Commerce de détail'}
                         </Text>
                     </View>
-                    {/* <View style={styles.qrPlaceholder}>
-                        <Text style={styles.qrText}>QR CODE</Text>
-                    </View> */}
+                    <View style={styles.qrPlaceholder}>
+                        <Image
+                            src={logo}
+                            style={{ width: 60, height: 60, objectFit: 'contain' }}
+                        />
+                    </View>
                 </View>
 
                 {/* Document Title */}
@@ -412,7 +472,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                 <View style={styles.infoBar}>
                     <View style={styles.infoItem}>
                         <Text style={styles.infoLabel}>Numéro de Facture</Text>
-                        <Text style={styles.infoValue}>#{invoice.invoiceNumber || '00000'}</Text>
+                        <Text style={styles.infoValue}>{formatNumber(invoice.invoiceNumber || '00000')}</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Text style={styles.infoLabel}>Date de Facture</Text>
@@ -426,7 +486,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                         <Text style={styles.infoLabel}>Mode de Paiement</Text>
                         <Text style={styles.infoValue}>{invoice.paymentMode || 'DZD'}</Text>
                     </View>
-                  
+
                 </View>
 
                 {/* Fournisseur & Client */}
@@ -473,8 +533,8 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                 </View>
 
                 {/* Delivery Info */}
-                {(invoice.invoiceType === 'BON DE LIVRAISON' || invoice.invoiceType === 'Bon de Transfert' ) && <Text style={styles.sectionTitle}>DÉTAILS DE LA LIVRAISON</Text>}
-               {(invoice.invoiceType === 'BON DE LIVRAISON' || invoice.invoiceType === 'Bon de Transfert' ) && <View style={styles.deliveryInfo}>
+                {(invoice.invoiceType === 'BON DE LIVRAISON' || invoice.invoiceType === 'Bon de Transfert') && <Text style={styles.sectionTitle}>DÉTAILS DE LA LIVRAISON</Text>}
+                {(invoice.invoiceType === 'BON DE LIVRAISON' || invoice.invoiceType === 'Bon de Transfert') && <View style={styles.deliveryInfo}>
                     <View style={[styles.deliveryItem, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
                         <Text style={styles.deliveryLabel}>Chauffeur:</Text>
                         <Text style={styles.deliveryValue}>{invoice.chauffeurName || '-'}</Text>
@@ -495,6 +555,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
 
                 {/* Products Table */}
                 <View style={styles.table}>
+                    {/* HEADER ROW */}
                     <View style={styles.tableHeader}>
                         <Text style={[styles.tableHeaderCell, styles.colCode]}>Code</Text>
                         <Text style={[styles.tableHeaderCell, styles.colProduct]}>Produit</Text>
@@ -503,6 +564,8 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                         <Text style={[styles.tableHeaderCell, styles.colTax]}>TVA (%)</Text>
                         <Text style={[styles.tableHeaderCell, styles.colTotalHT]}>Total HT</Text>
                     </View>
+
+                    {/* BODY ROWS */}
                     {invoice.items?.map((item: any, index: number) => {
                         const quantity = Number(item.item?.quantity || 0);
                         const unitPrice = Number(item.unitPrice || item.product?.price || 0);
@@ -514,18 +577,23 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                                 <Text style={[styles.tableCell, styles.colCode]}>
                                     {item.product?.code || `PROD-${index + 1}`}
                                 </Text>
+
                                 <Text style={[styles.tableCell, styles.colProduct]}>
                                     {item.product?.name || 'Article'}
                                 </Text>
+
                                 <Text style={[styles.tableCell, styles.colQty]}>
                                     {quantity}
                                 </Text>
+
                                 <Text style={[styles.tableCell, styles.colPrice]}>
                                     {unitPrice.toFixed(2)} DA
                                 </Text>
+
                                 <Text style={[styles.tableCell, styles.colTax]}>
                                     {taxRate.toFixed(2)}
                                 </Text>
+
                                 <Text style={[styles.tableCell, styles.colTotalHT]}>
                                     {totalHT.toFixed(2)} DA
                                 </Text>
@@ -533,6 +601,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                         );
                     })}
                 </View>
+
 
                 {/* Totals Section */}
                 <View style={styles.totalsContainer}>
@@ -545,16 +614,14 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                             <Text style={styles.totalLabel}>Total TVA</Text>
                             <Text style={styles.totalValue}>{invoice.totalTVA || '0.00'} DA</Text>
                         </View>
-                        <View style={styles.totalRow}>
-                            <Text style={styles.totalLabel}>Remise</Text>
-                            <Text style={styles.totalValue}>{invoice.discountAmount || '0.00'} DA</Text>
-                        </View>
+                      
                         <View style={[styles.totalRow, styles.totalFinalRow]}>
                             <Text style={styles.totalFinalLabel}>TOTAL TTC</Text>
                             <Text style={styles.totalFinalValue}>{invoice.totalTTC} DA</Text>
                         </View>
 
                     </View>
+                    
                 </View>
 
 

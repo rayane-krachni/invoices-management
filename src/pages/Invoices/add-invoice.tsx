@@ -121,7 +121,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
         fournisseurId: data.fournisseurId || "",
         invoiceNumber: data.invoiceNumber?.trim() || `FACT-${Date.now()}`,
         invoiceType: data.invoiceType ?? "Facture",
-        paymentMode: "DZD",
+        paymentMode: data.paymentMode ?? "cheque",
         totalHT: totalsCalc.totalHT.toFixed(2),
         totalTVA: totalsCalc.totalTVA.toFixed(2),
         totalTTC: totalsCalc.totalTTC.toFixed(2),
@@ -210,7 +210,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
 
-              {/* <div>
+              <div>
                 <label className="block font-medium">Mode de paiment</label>
                 <select
                   className="mt-1 w-full border rounded px-2 py-1"
@@ -221,9 +221,9 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                   <option value="Cash">Cash</option>
                   <option value="Cheque">Cheque</option>
                   <option value="Bank Transfer">Bank Transfer</option>
-                  <option value="Other">Other</option>
+                  <option value="Other">Autre</option>
                 </select>
-              </div> */}
+              </div>
             </div>
 
             {/* Client & Fournisseur with search */}

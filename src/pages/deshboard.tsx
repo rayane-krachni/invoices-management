@@ -30,7 +30,7 @@ const DashboardPage = () => {
 
   return (
     <MainLayout>
-      <GlobalCard title="Scn Krachni Lahcen" description="">
+      <GlobalCard title="SCN Krachni Lahcen et ses frères" description="">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
           <h1 className="text-3xl font-bold flex items-center gap-2 text-blue-700">

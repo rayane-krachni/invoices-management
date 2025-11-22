@@ -117,10 +117,9 @@ const ProductsPage = () => {
             <TableHeader className="bg-blue-50">
               <TableRow>
                 <TableHead className="text-gray-700 font-semibold">Date</TableHead>
-                <TableHead className="text-gray-700 font-semibold">ID</TableHead>
                 <TableHead className="text-gray-700 font-semibold">Code</TableHead>
                 <TableHead className="text-gray-700 font-semibold">Nom</TableHead>
-                <TableHead className="text-gray-700 font-semibold">Prix (€)</TableHead>
+                <TableHead className="text-gray-700 font-semibold">Prix (DZD)</TableHead>
                 <TableHead className="text-gray-700 font-semibold">TVA (%)</TableHead>
                 <TableHead className="text-gray-700 font-semibold text-center">Actions</TableHead>
               </TableRow>
@@ -130,7 +129,7 @@ const ProductsPage = () => {
               {products.map((product) => (
                 <TableRow key={product.id} className="hover:bg-blue-50 transition-colors">
                   <TableCell>{new Date().toLocaleDateString("fr-FR")}</TableCell>
-                  <TableCell>{product.id}</TableCell>
+    
                   <TableCell>{product.code}</TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.price.toFixed(2)}</TableCell>

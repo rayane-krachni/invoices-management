@@ -161,7 +161,6 @@ const ClientsPage = () => {
               <TableRow>
                 <TableHead>#</TableHead>
                 <TableHead>Nom complet</TableHead>
-                <TableHead>Adresse / Wilaya</TableHead>
                 <TableHead>Art</TableHead>
                 <TableHead>NIS</TableHead>
                 <TableHead>NIF</TableHead>
@@ -174,7 +173,6 @@ const ClientsPage = () => {
                 <TableRow key={client.id} className="hover:bg-blue-50 transition">
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">{client.fullName}</TableCell>
-                  <TableCell>{client.address} / {client.willaya}</TableCell>
                   <TableCell>{client.art}</TableCell>
                   <TableCell>{client.nis}</TableCell>
                   <TableCell>{client.nif}</TableCell>

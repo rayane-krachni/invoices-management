@@ -150,7 +150,6 @@ const FournisseurPage = () => {
               <TableRow>
                 <TableHead>#</TableHead>
                 <TableHead>Nom complet</TableHead>
-                <TableHead>Adresse / Wilaya</TableHead>
                 <TableHead>Art</TableHead>
                 <TableHead>NIS</TableHead>
                 <TableHead>NIF</TableHead>
@@ -166,9 +165,7 @@ const FournisseurPage = () => {
                 >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">{fournisseur.fullName}</TableCell>
-                  <TableCell>
-                    {fournisseur.address} / {fournisseur.willaya}
-                  </TableCell>
+             
                   <TableCell>{fournisseur.art}</TableCell>
                   <TableCell>{fournisseur.nis}</TableCell>
                   <TableCell>{fournisseur.nif}</TableCell>

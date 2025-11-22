@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
+import logo from "../assets/logo.jpeg"
 interface GlobalCardProps {
 	children: React.ReactNode;
 	title: string;
@@ -16,12 +16,15 @@ export function GlobalCard({
 	return (
 		<div className={className}>
 			<Card>
-				<CardHeader className="text-center">
-					<CardTitle className="text-4xl uppercase fon-bold">{title}</CardTitle>
+				<div className="flex flex-col justify-cener items-center text-center">
+					
+					<CardTitle className="flex justify-cener items-center text-3xl uppercase fon-bold">
+						<img width={100}  src={logo}></img>
+						{title}</CardTitle>
 					<CardDescription className="w-full mx-auto">
 						{description}
 					</CardDescription>
-				</CardHeader>
+				</div>
 				<CardContent>{children}</CardContent>
 			</Card>
 		</div>
