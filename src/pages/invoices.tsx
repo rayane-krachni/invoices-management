@@ -86,7 +86,7 @@ const InvoicesPage: React.FC = () => {
   };
 
   const handleUpdate = (updatedInvoice: InvoiceModel) => {
-    alert(updatedInvoice?.chauffeurName)
+
     setInvoices((prev) =>
       prev.map((f) => (f.id === updatedInvoice.id ? updatedInvoice : f))
     );
