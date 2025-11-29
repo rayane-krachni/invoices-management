@@ -20,6 +20,8 @@ export const invoices = pgTable(
     fournisseurId: uuid("fournisseur_id").notNull(),
     invoiceNumber: varchar("invoice_number", { length: 50 }).notNull(),
     invoiceType: varchar("invoice_type", { length: 50 }).notNull(), // facture type
+    creation: varchar("creation", { length: 50 }).default("0"),
+    delivery: varchar("delivery", { length: 50 }).default("0"),
     paymentMode: varchar("payment_mode", { length: 50 }).default("Cash"), // Cash by default
     totalHT: numeric("total_ht").notNull().default("0"),
     totalTVA: numeric("total_tva").notNull().default("0"),
@@ -58,10 +60,12 @@ export const invoiceSchema = z.object({
   fournisseurId: z.string().uuid(),
   invoiceNumber: z.string(),
   invoiceType: z.enum(["Facture Proforma", "Bon de Transfert", "Bon de Livraison", "Facture"]),
-  paymentMode: z.enum(["Cash", "Cheque", "Bank Transfer", "Other"]),
+  paymentMode: z.enum(["virement", "Cheque", "espèces", "a_term","a_term_3"]),
   totalHT: z.number(),
   totalTVA: z.number(),
   totalTTC: z.number(),
+  creation: z.string().nullable(),
+  delivery: z.string().nullable(),
   discountAmount: z.number().nullable(),
   chauffeurName: z.string().nullable(),
   chauffeurPhone: z.string().nullable(),

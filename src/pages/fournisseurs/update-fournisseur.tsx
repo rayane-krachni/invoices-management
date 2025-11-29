@@ -40,52 +40,47 @@ export const UpdateFournisseurModal: React.FC<UpdateFournisseurModalProps> = ({
     }
   }, [fournisseur]);
 
-const updateFournisseurMutation = useMutation<
-  FournisseurUpdateModel & { id: string },
-  { success: true; fournisseur: FournisseurModel },
-  Error
->({
-  fn: (data) =>
-    updateFournisseurServerFn({
-      data: {
-        id: data.id,
-        formData: {
-          fullName: data.fullName,
-          address: data.address,
-          willaya: data.willaya,
-          activity: data.activity ?? "",
-          art: data.art ?? "",
-          nis: data.nis ?? "",
-          nif: data.nif ?? "",
-          rc: data.rc ?? "",
+  const updateFournisseurMutation = useMutation<
+    FournisseurUpdateModel & { id: string },
+    { success: true; fournisseur: FournisseurModel },
+    Error
+  >({
+    fn: (data) =>
+      updateFournisseurServerFn({
+        data: {
+          id: data.id,
+          formData: {
+            fullName: data.fullName,
+            address: data.address,
+            willaya: data.willaya,
+            activity: data.activity ?? "",
+            art: data.art ?? "",
+            nis: data.nis ?? "",
+            nif: data.nif ?? "",
+            rc: data.rc ?? "",
+          },
         },
-      },
-    }).then((res) => ({
-      success: res.success,
-      fournisseur: {
-        ...res.fournisseur,
-        activity: res.fournisseur.activity ?? undefined,
-        art: res.fournisseur.art ?? undefined,
-        nis: res.fournisseur.nis ?? undefined,
-        nif: res.fournisseur.nif ?? undefined,
-        rc: res.fournisseur.rc ?? undefined,
-        updatedAt: res.fournisseur.updatedAt ?? undefined,
-      },
-    })),
-  onSuccess: ({ data }) => {
-    alert("Fournisseur mis à jour avec succès!");
-    onUpdate(data.fournisseur);
-    onClose();
-  },
-  onFailure: ({ error }) => {
-    alert("Échec de la mise à jour du fournisseur: " + error.message);
-  },
-});
-
-
-
-  const updateField = <K extends keyof FournisseurUpdateModel>(key: K, value: FournisseurUpdateModel[K]) =>
-    setModel((m) => (m ? { ...m, [key]: value } : m));
+      }).then((res) => ({
+        success: res.success,
+        fournisseur: {
+          ...res.fournisseur,
+          activity: res.fournisseur.activity ?? undefined,
+          art: res.fournisseur.art ?? undefined,
+          nis: res.fournisseur.nis ?? undefined,
+          nif: res.fournisseur.nif ?? undefined,
+          rc: res.fournisseur.rc ?? undefined,
+          updatedAt: res.fournisseur.updatedAt ?? undefined,
+        },
+      })),
+    onSuccess: ({ data }) => {
+      alert("Fournisseur mis à jour avec succès!");
+      onUpdate(data.fournisseur);
+      onClose();
+    },
+    onFailure: ({ error }) => {
+      alert("Échec de la mise à jour du fournisseur: " + error.message);
+    },
+  });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +88,11 @@ const updateFournisseurMutation = useMutation<
       updateFournisseurMutation.mutate({ id: fournisseur.id, ...model });
     }
   };
+
+  const updateField = <K extends keyof FournisseurUpdateModel>(key: K, value: FournisseurUpdateModel[K]) =>
+    setModel((m) => (m ? { ...m, [key]: value } : m));
+
+
 
   if (!isOpen || !model) return null;
 
@@ -111,7 +111,7 @@ const updateFournisseurMutation = useMutation<
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.keys(model).map((key) => (
-             key != "phone" && <div key={key}>
+              key != "phone" && <div key={key}>
                 <label className="block font-medium">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
                 <input
                   type="text"

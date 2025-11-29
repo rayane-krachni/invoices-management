@@ -3,88 +3,88 @@ import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 import logo from '../../assets/logo.jpeg'
 const UNITS = [
-  "zéro","un","deux","trois","quatre","cinq","six","sept","huit","neuf"
+    "zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf"
 ];
 
 const TEENS = [
-  "dix","onze","douze","treize","quatorze",
-  "quinze","seize","dix-sept","dix-huit","dix-neuf"
+    "dix", "onze", "douze", "treize", "quatorze",
+    "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"
 ];
 
 const TENS = [
-  "","",
-  "vingt","trente","quarante","cinquante","soixante",
-  "soixante","quatre-vingt","quatre-vingt"
+    "", "",
+    "vingt", "trente", "quarante", "cinquante", "soixante",
+    "soixante", "quatre-vingt", "quatre-vingt"
 ];
 
 function numberBelow100(n: number): string {
-  if (n < 10) return UNITS[n];
-  if (n < 20) return TEENS[n - 10];
+    if (n < 10) return UNITS[n];
+    if (n < 20) return TEENS[n - 10];
 
-  const ten = Math.floor(n / 10);
-  let unit = n % 10;
+    const ten = Math.floor(n / 10);
+    let unit = n % 10;
 
-  let base = TENS[ten];
+    let base = TENS[ten];
 
-  if (ten === 7 || ten === 9) {
-    unit += 10;
-  }
+    if (ten === 7 || ten === 9) {
+        unit += 10;
+    }
 
-  if (unit === 0) return base;
-  if (unit === 1 && ten !== 8) return base + "-et-un";
+    if (unit === 0) return base;
+    if (unit === 1 && ten !== 8) return base + "-et-un";
 
-  return base + "-" + numberBelow100(unit);
+    return base + "-" + numberBelow100(unit);
 }
 
 function numberBelow1000(n: number): string {
-  if (n < 100) return numberBelow100(n);
+    if (n < 100) return numberBelow100(n);
 
-  const hundreds = Math.floor(n / 100);
-  const rest = n % 100;
+    const hundreds = Math.floor(n / 100);
+    const rest = n % 100;
 
-  let result = "";
+    let result = "";
 
-  if (hundreds === 1) result = "cent";
-  else result = UNITS[hundreds] + " cent";
+    if (hundreds === 1) result = "cent";
+    else result = UNITS[hundreds] + " cent";
 
-  if (rest === 0) return result;
-  return result + " " + numberBelow100(rest);
+    if (rest === 0) return result;
+    return result + " " + numberBelow100(rest);
 }
 
 function numberToFrench(n: number): string {
-  if (n < 1000) return numberBelow1000(n);
-  if (n < 1_000_000) {
-    const thousands = Math.floor(n / 1000);
-    const rest = n % 1000;
+    if (n < 1000) return numberBelow1000(n);
+    if (n < 1_000_000) {
+        const thousands = Math.floor(n / 1000);
+        const rest = n % 1000;
 
-    const thousandWord =
-      thousands === 1 ? "mille" : numberBelow1000(thousands) + " mille";
+        const thousandWord =
+            thousands === 1 ? "mille" : numberBelow1000(thousands) + " mille";
 
-    return rest === 0 ? thousandWord : thousandWord + " " + numberBelow1000(rest);
-  }
+        return rest === 0 ? thousandWord : thousandWord + " " + numberBelow1000(rest);
+    }
 
-  if (n < 1_000_000_000) {
-    const millions = Math.floor(n / 1_000_000);
-    const rest = n % 1_000_000;
+    if (n < 1_000_000_000) {
+        const millions = Math.floor(n / 1_000_000);
+        const rest = n % 1_000_000;
 
-    const millionWord =
-      millions === 1 ? "un million" : numberBelow1000(millions) + " millions";
+        const millionWord =
+            millions === 1 ? "un million" : numberBelow1000(millions) + " millions";
 
-    return rest === 0 ? millionWord : millionWord + " " + numberToFrench(rest);
-  }
+        return rest === 0 ? millionWord : millionWord + " " + numberToFrench(rest);
+    }
 
-  return n.toString(); // too large
+    return n.toString(); // too large
 }
 
 export function amountToFrenchWords(amount: number | string): string {
-  const num = Number(amount) || 0;
-  const integerPart = Math.floor(num);
-  const decimalPart = Math.round((num - integerPart) * 100);
+    const num = Number(amount) || 0;
+    const integerPart = Math.floor(num);
+    const decimalPart = Math.round((num - integerPart) * 100);
 
-  if (decimalPart === 0)
-    return `${numberToFrench(integerPart)} dinars algériens`;
+    if (decimalPart === 0)
+        return `${numberToFrench(integerPart)} dinars algériens`;
 
-  return `${numberToFrench(integerPart)} dinars et ${numberToFrench(decimalPart)} centimes`;
+    return `${numberToFrench(integerPart)} dinars et ${numberToFrench(decimalPart)} centimes`;
 }
 
 
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
     },
     tableHeaderCell: {
-        padding: 7,
+        padding: 3,
         fontSize: 8,
         fontWeight: 'bold',
         color: '#0b0b0bff',
@@ -321,12 +321,12 @@ const styles = StyleSheet.create({
     },
     totalFinalLabel: {
         color: '#000000ff',
-        fontSize: 10,
+        fontSize: 9,
         fontWeight: 'bold',
     },
     totalFinalValue: {
         color: '#000000ff',
-        fontSize: 10,
+        fontSize: 9,
         fontWeight: 'bold',
     },
     totalWords: {
@@ -420,26 +420,42 @@ const styles = StyleSheet.create({
 interface InvoicePDFProps {
     invoice: any & { items?: any[] };
 }
-const formatNumber = (num: number | string, length: number = 5) => {
-  const cleaned = Number(String(num || 0).replace("#", ""));
-  return String(cleaned).padStart(length, "0");
-};
+const getPaymentMode = (mode: string) => {
+
+    switch (mode) {
+        case 'virement':
+            return "Virement"
+        case 'Cheque':
+            return "Chèque"
+        case 'espèces':
+            return "Espèces"
+        case 'a_term':
+            return "À terme"
+        case 'a_term_3':
+            return "À terme (3 mois)"
+
+        default:
+            return "Chèque";
+    }
+
+
+}
 
 
 export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
-const formatDate = (date: any) => {
-  if (!date) return "";
+    const formatDate = (date: any) => {
+        if (!date) return "";
 
-  const d = new Date(date);
+        const d = new Date(date);
 
-  if (isNaN(d.getTime())) return ""; // Prevent "Invalid Date"
+        if (isNaN(d.getTime())) return ""; // Prevent "Invalid Date"
 
-  return d.toLocaleDateString("fr-FR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-};
+        return d.toLocaleDateString("fr-FR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        });
+    };
 
 
     return (
@@ -472,19 +488,19 @@ const formatDate = (date: any) => {
                 <View style={styles.infoBar}>
                     <View style={styles.infoItem}>
                         <Text style={styles.infoLabel}>Numéro de Facture</Text>
-                        <Text style={styles.infoValue}>{formatNumber(invoice.invoiceNumber || '00000')}</Text>
+                        <Text style={styles.infoValue}>{invoice.invoiceNumber}</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Text style={styles.infoLabel}>Date de Facture</Text>
-                        <Text style={styles.infoValue}>{formatDate(invoice.date)}</Text>
+                        <Text style={styles.infoValue}>{invoice.creation}</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Text style={styles.infoLabel}>Date de Livraison</Text>
-                        <Text style={styles.infoValue}>{formatDate(invoice.deliveryDate || invoice.date)}</Text>
+                        <Text style={styles.infoValue}>{invoice.delivery}</Text>
                     </View>
                     <View style={styles.infoItem}>
                         <Text style={styles.infoLabel}>Mode de Paiement</Text>
-                        <Text style={styles.infoValue}>{invoice.paymentMode || 'DZD'}</Text>
+                        <Text style={styles.infoValue}>{getPaymentMode(invoice.paymentMode)}</Text>
                     </View>
 
                 </View>
@@ -614,14 +630,14 @@ const formatDate = (date: any) => {
                             <Text style={styles.totalLabel}>Total TVA</Text>
                             <Text style={styles.totalValue}>{invoice.totalTVA || '0.00'} DA</Text>
                         </View>
-                      
+
                         <View style={[styles.totalRow, styles.totalFinalRow]}>
                             <Text style={styles.totalFinalLabel}>TOTAL TTC</Text>
                             <Text style={styles.totalFinalValue}>{invoice.totalTTC} DA</Text>
                         </View>
 
                     </View>
-                    
+
                 </View>
 
 

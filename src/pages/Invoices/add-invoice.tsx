@@ -31,6 +31,8 @@ export interface InvoiceCreateModel {
   chauffeurPhone?: string;
   transportLicense?: string;
   paymentMode?: string;
+  creation: string;
+  delivery: string;
 }
 
 const uid = (prefix = "") => `${prefix}${Math.random().toString(36).slice(2, 9)}`;
@@ -68,7 +70,9 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
     currency: "DZD",
     items: [],
     discountAmount: 0,
-    paymentMode: "Cheque"
+    paymentMode: "Cheque",
+    creation: "",
+    delivery: ""
   });
 
   const [clients, setClients] = useState<{ id: string; fullName: string }[]>([]);
@@ -129,6 +133,8 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
         chauffeurName: data.chauffeurName ?? "",
         chauffeurPhone: data.chauffeurPhone ?? "",
         transportLicense: data.transportLicense ?? "",
+        creation: data.creation,
+        delivery: data.delivery,
       };
 
       const itemsData: Omit<NewInvoiceItem, "invoiceId">[] = data.items.map((item) => ({
@@ -205,7 +211,25 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
             }}
             className="space-y-5"
           >             <h1 className="text-blue-600 font-bold text-2Xl">Details du facture</h1>
-            <div className="border border-2"/>
+            <div className="border border-2" />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div >
+                <label className="block font-medium">Num de facture</label>
+                <div className="relative">
+
+                  <input
+                    type="text"
+                    placeholder="Entrer le num de facture"
+                    className="pl-2 border rounded w-full py-1 text-sm mb-2"
+                    value={model.invoiceNumber}
+                    onChange={(e) => updateField("invoiceNumber", e.target.value)}
+                  />
+                </div>
+
+              </div>
+
+            </div>
             {/* Invoice metadata */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
@@ -218,11 +242,38 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                   onChange={(e) => updateField("paymentMode", e.target.value)}
                 >
                   <option value="">Sélectionner le mode de paiement</option>
-                  <option value="Cash">Cash</option>
-                  <option value="Cheque">Cheque</option>
-                  <option value="Bank Transfer">Bank Transfer</option>
-                  <option value="Other">Autre</option>
+                  <option value="virement">Virement</option>
+                  <option value="Cheque">Chèque</option>
+                  <option value="espèces">Espèces</option>
+                  <option value="a_term">À terme</option>
+                  <option value="a_term_3">À terme (3 mois)</option>
                 </select>
+              </div>
+              <div >
+                <label className="block font-medium">Date de creation</label>
+                <div className="relative">
+
+                  <input
+                    type="text"
+                    placeholder="Entrer la date de creation dd/mm/yyyy"
+                    className="pl-2 border rounded w-full py-1 text-sm mb-2"
+                    value={model.creation}
+                    onChange={(e) => updateField("creation", e.target.value)}
+                  />
+                </div>
+
+              </div>
+              <div >
+                <label className="block font-medium">Date de livraison</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Entrer la date de livraison dd/mm/yyyy"
+                    className="pl-2 border rounded w-full py-1 text-sm mb-2"
+                    value={model.delivery}
+                    onChange={(e) => updateField("delivery", e.target.value)}
+                  />
+                </div>
               </div>
             </div>
 
@@ -242,7 +293,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                   <option value="Bon de Transfert">Bon de Transfert</option>
                 </select>
               </div>
-             <div >
+              <div >
                 <label className="block font-medium">Client</label>
                 <div className="relative">
                   <FaSearch className="absolute left-2 top-3 text-gray-400" />
@@ -297,7 +348,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
             </div>
 
             <h1 className="text-blue-600 font-bold text-2Xl">Chauffeur & Transport</h1>
-            <div className="border border-2"/>
+            <div className="border border-2" />
 
             {/* Chauffeur & Transport */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -315,7 +366,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                 <label className="block font-medium">Téléphone du chauffeur</label>
                 <input
                   type="tel"
-                   placeholder="Entrer le numero de chauffeur"
+                  placeholder="Entrer le numero de chauffeur"
                   className="mt-1 w-full border rounded px-2 py-1"
                   value={model.chauffeurPhone || ""}
                   onChange={(e) => updateField("chauffeurPhone", e.target.value)}
@@ -333,8 +384,8 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
               </div>
             </div>
 
-             <h1 className="text-blue-600 font-bold text-2Xl">Produits</h1>
-            <div className="border border-2"/>
+            <h1 className="text-blue-600 font-bold text-2Xl">Produits</h1>
+            <div className="border border-2" />
 
             {/* Articles */}
             <fieldset className="border rounded p-4">
@@ -386,11 +437,11 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
               <div className="flex flex-row justify-between gap-3  text-right space-y-1">
                 <p><strong>Total Net HT:</strong> {totals.totalHT.toFixed(2)} {model.currency}</p>
                 <p><strong>Total TVA:</strong> {totals.totalTVA.toFixed(2)} {model.currency}</p>
-                
+
               </div>
 
               <div className="flex flex-row justify-between gap-3 text-right space-y-1">
-              
+
                 <p className="font-bold text-lg text-blue-700">
                   <strong>Total TTC:</strong> {totals.totalTTC.toFixed(2)} {model.currency}
                 </p>

@@ -8,7 +8,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import React, { useEffect, useState } from "react";
-import { FaEye, FaFileInvoice, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaFileInvoice, FaTrash } from "react-icons/fa";
 import { AddInvoiceModal } from "./Invoices/add-invoice";
 import {
   deleteInvoiceServerFn,
@@ -16,6 +16,7 @@ import {
 } from "@/server/invoices-fn";
 import ViewInvoiceModal from "./Invoices/view-invoice";
 import { toast } from "sonner";
+import UpadateInvoiceModal from "./Invoices/update-invoice";
 
 export interface InvoiceModel {
   id: string;
@@ -33,11 +34,15 @@ export interface InvoiceModel {
   chauffeurPhone: string;
   transportLicense: string;
   items: any[];
+  creation: string;
+  delivery: string;
 }
 
 const InvoicesPage: React.FC = () => {
   const [openInvoiceModal, setOpenInvoiceModal] = useState(false);
   const [viewInvoiceModal, setViewInvoiceModal] = useState(false);
+  const [updateInvoiceModal, setOpenUpdateInvoiceModal] = useState(false);
+
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceModel | null>(null);
   const [invoices, setInvoices] = useState<InvoiceModel[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceModel[]>([]);
@@ -51,7 +56,7 @@ const InvoicesPage: React.FC = () => {
       const data = await loadInvoicesServerFn();
       const normalizedInvoices = data.map((inv: any, index: number) => ({
         id: inv.invoice.id,
-        invoiceNumber: (index + 1).toString(),
+        invoiceNumber: inv.invoice.invoiceNumber,
         invoiceType: inv.invoice.invoiceType ?? "Facture",
         client: inv.client ?? { fullName: "Inconnu" },
         fournisseur: inv.fournisseur ?? { fullName: "Inconnu" },
@@ -67,6 +72,8 @@ const InvoicesPage: React.FC = () => {
         chauffeurPhone: inv.invoice?.chauffeurPhone ?? "",
         transportLicense: inv.invoice?.transportLicense ?? "",
         items: inv.items ?? [],
+        creation: inv.invoice.creation,
+        delivery: inv.invoice.delivery,
       }));
       setInvoices(normalizedInvoices);
       setFilteredInvoices(normalizedInvoices);
@@ -77,6 +84,10 @@ const InvoicesPage: React.FC = () => {
     }
   };
 
+  const handleUpdate = (updatedInvoice: InvoiceModel) => {
+
+    fetchInvoices()
+  };
   useEffect(() => {
     fetchInvoices();
   }, []);
@@ -95,6 +106,12 @@ const InvoicesPage: React.FC = () => {
       );
     }
   }, [searchTerm, invoices]);
+
+  const handleEdit = (inv: InvoiceModel) => {
+
+    setSelectedInvoice(inv);
+    setOpenUpdateInvoiceModal(true);
+  };
 
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm(
@@ -205,6 +222,14 @@ const InvoicesPage: React.FC = () => {
                         <Button
                           size="sm"
                           variant="outline"
+                          className="hover:bg-blue-100"
+                          onClick={() => handleEdit(inv)}
+                        >
+                          <FaEdit className="text-blue-600" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
                           onClick={() => handleView(inv)}
                         >
                           <FaEye />
@@ -217,6 +242,7 @@ const InvoicesPage: React.FC = () => {
                         >
                           <FaTrash />
                         </Button>
+
                       </div>
                     </TableCell>
                   </TableRow>
@@ -240,6 +266,16 @@ const InvoicesPage: React.FC = () => {
           isOpen={viewInvoiceModal}
           invoice={selectedInvoice}
           onClose={() => setViewInvoiceModal(false)}
+        />
+      )}
+
+      {(selectedInvoice && updateInvoiceModal) && (
+        <UpadateInvoiceModal
+          isOpen={updateInvoiceModal}
+          invoice={selectedInvoice}
+
+          onClose={() => setOpenUpdateInvoiceModal(false)}
+          onUpdate={() => handleUpdate(selectedInvoice!)}
         />
       )}
     </div>

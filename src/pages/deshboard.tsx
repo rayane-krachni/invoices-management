@@ -30,7 +30,7 @@ const DashboardPage = () => {
 
   return (
     <MainLayout>
-      <GlobalCard title="SCN Krachni Lahcen et ses frères" description="">
+      <GlobalCard title="SCN Krachni Lahcen et frères" description="">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
           <h1 className="text-3xl font-bold flex items-center gap-2 text-blue-700">
@@ -49,11 +49,10 @@ const DashboardPage = () => {
         <div className="flex flex-col sm:flex-row justify-between gap-1 mb-6">
           <Button
             variant={activeTab === "invoices" ? "default" : "outline"}
-            className={`w-full sm:w-1/4 font-bold flex items-center justify-center gap-2 ${
-              activeTab === "invoices"
-                ? "bg-blue-600 text-white"
-                : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-            }`}
+            className={`w-full sm:w-1/4 font-bold flex items-center justify-center gap-2 ${activeTab === "invoices"
+              ? "bg-blue-600 text-white"
+              : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+              }`}
             onClick={() => setActiveTab("invoices")}
           >
             <FaFileInvoice /> Factures
@@ -61,11 +60,10 @@ const DashboardPage = () => {
 
           <Button
             variant={activeTab === "clients" ? "default" : "outline"}
-            className={`w-full sm:w-1/4 font-bold flex items-center justify-center gap-2 ${
-              activeTab === "clients"
-                ? "bg-green-600 text-white"
-                : "bg-green-100 text-green-700 hover:bg-green-200"
-            }`}
+            className={`w-full sm:w-1/4 font-bold flex items-center justify-center gap-2 ${activeTab === "clients"
+              ? "bg-green-600 text-white"
+              : "bg-green-100 text-green-700 hover:bg-green-200"
+              }`}
             onClick={() => setActiveTab("clients")}
           >
             <FaUsers /> Clients
@@ -73,11 +71,10 @@ const DashboardPage = () => {
 
           <Button
             variant={activeTab === "fournisseurs" ? "default" : "outline"}
-            className={`w-full sm:w-1/4 font-bold flex items-center justify-center gap-2 ${
-              activeTab === "fournisseurs"
-                ? "bg-blue-600 text-white"
-                : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-            }`}
+            className={`w-full sm:w-1/4 font-bold flex items-center justify-center gap-2 ${activeTab === "fournisseurs"
+              ? "bg-blue-600 text-white"
+              : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+              }`}
             onClick={() => setActiveTab("fournisseurs")}
           >
             <FaBuilding /> Fournisseurs
@@ -85,11 +82,10 @@ const DashboardPage = () => {
 
           <Button
             variant={activeTab === "fournisseurs" ? "default" : "outline"}
-            className={`w-full sm:w-1/4 font-bold flex items-center justify-center gap-2 ${
-              activeTab === "fournisseurs"
-                ? "bg-orange-600 text-white"
-                : "bg-orange-100 text-orange-700 hover:bg-orange-200"
-            }`}
+            className={`w-full sm:w-1/4 font-bold flex items-center justify-center gap-2 ${activeTab === "fournisseurs"
+              ? "bg-orange-600 text-white"
+              : "bg-orange-100 text-orange-700 hover:bg-orange-200"
+              }`}
             onClick={() => setActiveTab("product")}
           >
             <FaProductHunt /> Produits

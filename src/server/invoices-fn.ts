@@ -77,15 +77,43 @@ export const loadInvoicesServerFn = createServerFn({
 export const updateInvoiceServerFn = createServerFn({
   method: "POST",
 })
-  .inputValidator((data: { id: string; formData: any }) => data)
+ .inputValidator((data: { id: any; formData: any }) => data)
   .handler(async ({ data }) => {
+    const { id, formData } = data;
+    const { items, ...invoiceData } = formData;;
+
+    // ---- 1) Update invoice table ----
     const [invoice] = await db
       .update(invoices)
-      .set(data.formData)
-      .where(eq(invoices.id, data.id))
+      .set(invoiceData)
+      .where(eq(invoices.id, id))
       .returning();
-    return { success: true, invoice };
+
+    // ---- 2) Update invoice items ----
+    if (items && items.length > 0) {
+      // Delete old items
+      await db.delete(invoiceItems).where(eq(invoiceItems.invoiceId, id));
+
+      // Insert new items
+      const insertedItems = await db
+        .insert(invoiceItems)
+        .values(
+          items.map((item: any) => ({
+            invoiceId: id,
+            productId: item.productId,
+            quantity: item.quantity ?? 1,
+            unitPrice: item.unitPrice.toString(),
+            taxRate: item.taxRate?.toString() ?? "0",
+          }))
+        )
+        .returning();
+
+      return { success: true, invoice, items: insertedItems };
+    }
+
+    return { success: true, invoice, items: [] };
   });
+
 
 // Delete invoice
 export const deleteInvoiceServerFn = createServerFn({
