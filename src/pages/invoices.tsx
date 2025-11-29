@@ -54,6 +54,7 @@ const InvoicesPage: React.FC = () => {
     setLoading(true);
     try {
       const data = await loadInvoicesServerFn();
+      console.log("data", data)
       const normalizedInvoices = data.map((inv: any, index: number) => ({
         id: inv.invoice.id,
         invoiceNumber: inv.invoice.invoiceNumber,
@@ -85,8 +86,10 @@ const InvoicesPage: React.FC = () => {
   };
 
   const handleUpdate = (updatedInvoice: InvoiceModel) => {
-
-    fetchInvoices()
+    alert(updatedInvoice?.chauffeurName)
+    setInvoices((prev) =>
+      prev.map((f) => (f.id === updatedInvoice.id ? updatedInvoice : f))
+    );
   };
   useEffect(() => {
     fetchInvoices();
@@ -275,7 +278,7 @@ const InvoicesPage: React.FC = () => {
           invoice={selectedInvoice}
 
           onClose={() => setOpenUpdateInvoiceModal(false)}
-          onUpdate={() => handleUpdate(selectedInvoice!)}
+          onUpdate={handleUpdate}
         />
       )}
     </div>

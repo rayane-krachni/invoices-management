@@ -133,10 +133,63 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                     },
                 }
 
-            })
+            }).then((res) => ({
+
+                invoice: {
+                    id: res.invoice.id,
+                    invoiceNumber: res.invoice.invoiceNumber,
+                    invoiceType: res.invoice.invoiceType,
+                    client: res.invoice.clientId,
+                    fournisseur: res.invoice.fournisseurId,
+                    date: res.invoice.createdAt.toISOString(),
+                    paymentMode: res.invoice.paymentMode ?? "",
+                    totalHT: res.invoice.totalHT,
+                    totalTVA: res.invoice.totalTVA,
+                    totalTTC: res.invoice.totalTTC,
+                    discountAmount: "0",
+                    chauffeurName: res.invoice.chauffeurName ?? "",
+                    chauffeurPhone: res.invoice.chauffeurPhone ?? "",
+                    transportLicense: res.invoice.transportLicense ?? "",
+                    items: res.items,
+                    creation: res.invoice.creation ?? "",
+                    delivery: res.invoice.delivery ?? "",
+
+                }
+
+
+
+
+            }));
 
         },
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
+            const totalsCalc = calculateInvoiceTotals(model);
+            const itemsData: Omit<NewInvoiceItem, "invoiceId">[] = model.items.map((item) => ({
+                productId: item.productId,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice.toString(),
+                taxRate: item.taxRate?.toString() ?? "0",
+            }));
+            onUpdate({
+                id: data.invoice.id,
+                invoiceNumber: model.invoiceNumber ?? "",
+                invoiceType: model.invoiceType ?? "",
+                client: model.clientId,
+                fournisseur: model.fournisseurId,
+                date: "",
+                paymentMode: model.paymentMode ?? "",
+                totalHT: totalsCalc.totalHT.toFixed(2),
+                totalTVA: totalsCalc.totalTVA.toFixed(2),
+                totalTTC: totalsCalc.totalTTC.toFixed(2),
+                discountAmount: "0",
+                chauffeurName: model.chauffeurName ?? "",
+                chauffeurPhone: model.chauffeurPhone ?? "",
+                transportLicense: model.transportLicense ?? "",
+                items: itemsData,
+                creation: model.creation ?? "",
+                delivery: model.delivery ?? "",
+            });
+
             onClose();
         },
         onFailure: (ctx) => {
@@ -183,11 +236,11 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
             currency: invoice.paymentMode || "DZD",
             items: invoice.items?.map((item: any) => ({
                 id: uid("itm_"),
-                productId: item.product.id,
-                description: item.product.name,
-                quantity: Number(item.item.quantity),
-                unitPrice: Number(item.item.unitPrice),
-                taxRate: Number(item.item.taxRate || 0),
+                productId: item.productId || item.product?.id,
+                description: item.description || item.product?.name || "Produit inconnu",
+                quantity: Number(item.quantity || item.item?.quantity || 1),
+                unitPrice: Number(item.unitPrice || item.item?.unitPrice || 0),
+                taxRate: Number(item.taxRate || item.item?.taxRate || 0),
             })) || [],
             discountAmount: Number(invoice.discountAmount) || 0,
             paymentMode: invoice.paymentMode || "Cheque",
@@ -474,7 +527,7 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                                 className="bg-blue-600 text-white font-bold px-6 py-2 rounded hover:bg-blue-700"
                             >
 
-                                {updateInvoiceMutation.status === "pending" ? "Création..." : "Créer la facture"}
+                                {updateInvoiceMutation.status === "pending" ? "Modification..." : "Modifier la facture"}
                             </button>
                         </div>
                     </form>
