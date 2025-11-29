@@ -227,9 +227,11 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
         }
         fetchData();
 
+        console.log("-----invoice", invoice)
+
         setModel({
-            clientId: invoice.client?.id || "",
-            fournisseurId: invoice.fournisseur?.id || "",
+            clientId: invoice.client?.id || invoice.client || "",
+            fournisseurId: invoice.fournisseur?.id || invoice.fournisseur || "",
             invoiceNumber: invoice.invoiceNumber || "",
             invoiceType: invoice.invoiceType || "",
             date: invoice.date ? invoice.date.split("/").reverse().join("-") : new Date().toISOString().slice(0, 10),
