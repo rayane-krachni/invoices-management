@@ -21,6 +21,8 @@ export interface InvoiceCreateModel {
   clientId: string;
   fournisseurId?: string;
   invoiceNumber?: string;
+  clientName: string;
+  fournisseurName?: string;
   invoiceType?: string;
   date: string;
   dueDate?: string;
@@ -64,6 +66,8 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
   const [model, setModel] = useState<InvoiceCreateModel>({
     clientId: "",
     fournisseurId: "",
+    clientName: "",
+    fournisseurName: "",
     invoiceNumber: "",
     invoiceType: "",
     date: new Date().toISOString().slice(0, 10),

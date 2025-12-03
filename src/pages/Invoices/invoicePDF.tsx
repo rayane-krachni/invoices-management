@@ -238,8 +238,8 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
         color: '#2D3748',
-        marginTop: 15,
-        marginBottom: 2,
+        marginTop: 5,
+        marginBottom: 5,
         paddingBottom: 1,
         borderBottomWidth: 1,
         borderBottomColor: '#E2E8F0',
@@ -249,8 +249,8 @@ const styles = StyleSheet.create({
         width: '100%',
         borderWidth: 1,
         borderColor: '#E2E8F0',
-        marginTop: 2,
-        marginBottom: 2,
+        marginTop: 1,
+        marginBottom: 1,
     },
     tableHeader: {
         flexDirection: 'row',
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
     },
     tableHeaderCell: {
-        padding: 3,
+        padding: 1,
         fontSize: 8,
         fontWeight: 'bold',
         color: '#0b0b0bff',
@@ -279,12 +279,12 @@ const styles = StyleSheet.create({
     },
     // Column widths
     colCode: { width: '10%' },
-    colProduct: { width: '35%' },
+    colProduct: { width: '30%' },
     colDescription: { width: '25%' },
     colQty: { width: '10%', textAlign: 'center' },
-    colPrice: { width: '20%', textAlign: 'right' },
+    colPrice: { width: '20%', textAlign: 'center' },
     colTax: { width: '10%', textAlign: 'center' },
-    colTotalHT: { width: '13%', textAlign: 'right', borderRightWidth: 0 },
+    colTotalHT: { width: '20%', textAlign: 'center', borderRightWidth: 0 },
     // Totals Section
     totalsContainer: {
         flexDirection: 'row',
@@ -647,7 +647,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                     {/* // */}
                     <View style={styles.totalWords}>
                         <Text style={styles.letterTitle}>Total en lettre</Text>
-                        <Text>{amountToFrenchWords(invoice.totalTTC)}</Text>
+                        <Text>{amountToFrenchWords(invoice.totalTTC)} </Text>
                     </View>
                     <View>
                         <Text style={styles.signatureTitle}>Signature</Text>

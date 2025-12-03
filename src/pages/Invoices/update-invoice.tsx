@@ -8,6 +8,7 @@ import { createInvoiceServerFn, updateInvoiceServerFn } from "@/server/invoices-
 import { NewInvoice, NewInvoiceItem } from "@/db/schema";
 import { InvoiceCreateModel, InvoiceLineItem } from "./add-invoice";
 import { InvoiceModel } from "../invoices";
+import { json } from "zod";
 
 const uid = (prefix = "") => `${prefix}${Math.random().toString(36).slice(2, 9)}`;
 const TIMBRE_AMOUNT = 0.6;
@@ -40,6 +41,8 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
     const [model, setModel] = useState<InvoiceCreateModel>({
         clientId: "",
         fournisseurId: "",
+        clientName: "",
+        fournisseurName: "",
         invoiceNumber: "",
         invoiceType: "",
         date: new Date().toISOString().slice(0, 10),
@@ -170,13 +173,14 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                 unitPrice: item.unitPrice.toString(),
                 taxRate: item.taxRate?.toString() ?? "0",
             }));
+
             onUpdate({
                 id: data.invoice.id,
                 invoiceNumber: model.invoiceNumber ?? "",
                 invoiceType: model.invoiceType ?? "",
-                client: model.clientId,
-                fournisseur: model.fournisseurId,
-                date: "",
+                client: JSON.stringify({ id: model.clientId, name: model.clientName }),
+                fournisseur: JSON.stringify({ id: model.fournisseurId, name: model.fournisseurName }),
+                date: model.date,
                 paymentMode: model.paymentMode ?? "",
                 totalHT: totalsCalc.totalHT.toFixed(2),
                 totalTVA: totalsCalc.totalTVA.toFixed(2),
@@ -227,11 +231,16 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
         }
         fetchData();
 
-        console.log("-----invoice", invoice)
+        console.log("-----invoice", invoice.client.id)
+        const client = typeof invoice.client === "string" ? JSON.parse(invoice.client) : invoice.client;
+        const fournisseur = typeof invoice.fournisseur === "string" ? JSON.parse(invoice.fournisseur) : invoice.fournisseur;
+
 
         setModel({
-            clientId: invoice.client?.id || invoice.client || "",
-            fournisseurId: invoice.fournisseur?.id || invoice.fournisseur || "",
+            clientName: invoice.client?.fullName || client.name,
+            fournisseurName: invoice.fournisseur?.fullName || fournisseur.name,
+            clientId: invoice.client?.id || client.id,
+            fournisseurId: invoice.fournisseur?.id || fournisseur.id,
             invoiceNumber: invoice.invoiceNumber || "",
             invoiceType: invoice.invoiceType || "",
             date: invoice.date ? invoice.date.split("/").reverse().join("-") : new Date().toISOString().slice(0, 10),
@@ -380,13 +389,17 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                                 </div>
                                 <select
                                     className="w-full border rounded px-2 py-1"
-                                    value={model.clientId}
-                                    onChange={(e) => updateField("clientId", e.target.value)}
+                                    value={model.clientId ? JSON.stringify({ id: model.clientId, name: model.clientName }) : ""}
+                                    onChange={(e) => {
+                                        const { id, name } = JSON.parse(e.target.value);
+                                        updateField("clientId", id);
+                                        updateField("clientName", name);
+                                    }}
                                     required
                                 >
                                     <option value="">Sélectionner un client</option>
                                     {filteredClients.map((c) => (
-                                        <option key={c.id} value={c.id}>
+                                        <option key={c.id} value={JSON.stringify({ id: c.id, name: c.fullName })}>
                                             {c.fullName}
                                         </option>
                                     ))}
@@ -407,12 +420,16 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                                 </div>
                                 <select
                                     className="w-full border rounded px-2 py-1"
-                                    value={model.fournisseurId}
-                                    onChange={(e) => updateField("fournisseurId", e.target.value)}
+                                    value={model.fournisseurId ? JSON.stringify({ id: model.fournisseurId, name: model.fournisseurName }) : ""}
+                                    onChange={(e) => {
+                                        const { id, name } = JSON.parse(e.target.value);
+                                        updateField("fournisseurId", id);
+                                        updateField("fournisseurName", name);
+                                    }}
                                 >
                                     <option value="">Sélectionner un fournisseur</option>
                                     {filteredFournisseurs.map((f) => (
-                                        <option key={f.id} value={f.id}>
+                                        <option key={f.id} value={JSON.stringify({ id: f.id, name: f.fullName })}>
                                             {f.fullName}
                                         </option>
                                     ))}

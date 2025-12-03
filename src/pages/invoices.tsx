@@ -86,6 +86,7 @@ const InvoicesPage: React.FC = () => {
   };
 
   const handleUpdate = (updatedInvoice: InvoiceModel) => {
+    console.log("Updated Invoice:", updatedInvoice);
 
     setInvoices((prev) =>
       prev.map((f) => (f.id === updatedInvoice.id ? updatedInvoice : f))
@@ -185,7 +186,7 @@ const InvoicesPage: React.FC = () => {
             <Table className="text-xs md:text-sm">
               <TableHeader className="bg-blue-50">
                 <TableRow>
-                  <TableHead>ID</TableHead>
+                  <TableHead>Numero</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Client</TableHead>
@@ -202,54 +203,60 @@ const InvoicesPage: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredInvoices.map((inv, index) => (
-                  <TableRow
-                    key={inv.id}
-                    className="hover:bg-blue-50 transition-colors"
-                  >
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{inv.date}</TableCell>
-                    <TableCell>{inv.invoiceType}</TableCell>
-                    <TableCell>{inv.client.fullName}</TableCell>
-                    <TableCell>{inv.fournisseur.fullName}</TableCell>
-                    <TableCell>{inv.items.length}</TableCell>
-                    <TableCell>{inv.totalHT}</TableCell>
-                    <TableCell>{inv.totalTVA}</TableCell>
-                    <TableCell>{inv.totalTTC}</TableCell>
-                    <TableCell>{inv.discountAmount}</TableCell>
-                    <TableCell>{inv.chauffeurName}</TableCell>
-                    <TableCell>{inv.chauffeurPhone}</TableCell>
-                    <TableCell>{inv.transportLicense}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="hover:bg-blue-100"
-                          onClick={() => handleEdit(inv)}
-                        >
-                          <FaEdit className="text-blue-600" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleView(inv)}
-                        >
-                          <FaEye />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          disabled={deletingId === inv.id}
-                          onClick={() => handleDelete(inv.id)}
-                        >
-                          <FaTrash />
-                        </Button>
+                {filteredInvoices.map((inv, index) => {
+                  const client = typeof inv.client === "string" ? JSON.parse(inv.client) : inv.client;
+                  const fournisseur = typeof inv.fournisseur === "string" ? JSON.parse(inv.fournisseur) : inv.fournisseur;
 
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                  return (
+                    <TableRow
+                      key={inv.id}
+                      className="hover:bg-blue-50 transition-colors"
+                    >
+                      <TableCell>{inv.invoiceNumber}</TableCell>
+                      <TableCell>{inv.date}</TableCell>
+                      <TableCell>{inv.invoiceType}</TableCell>
+                      <TableCell>{client.fullName ?? client.name}</TableCell>
+                      <TableCell>{fournisseur.fullName ?? fournisseur.name}</TableCell> <TableCell>{inv.items.length}</TableCell>
+                      <TableCell>{inv.totalHT}</TableCell>
+                      <TableCell>{inv.totalTVA}</TableCell>
+                      <TableCell>{inv.totalTTC}</TableCell>
+                      <TableCell>{inv.discountAmount}</TableCell>
+                      <TableCell>{inv.chauffeurName}</TableCell>
+                      <TableCell>{inv.chauffeurPhone}</TableCell>
+                      <TableCell>{inv.transportLicense}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="hover:bg-blue-100"
+                            onClick={() => handleEdit(inv)}
+                          >
+                            <FaEdit className="text-blue-600" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleView(inv)}
+                          >
+                            <FaEye />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            disabled={deletingId === inv.id}
+                            onClick={() => handleDelete(inv.id)}
+                          >
+                            <FaTrash />
+                          </Button>
+
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )
+
+
+                })}
               </TableBody>
             </Table>
           </div>
