@@ -3158,7 +3158,7 @@ function getResponse() {
   return event._res;
 }
 async function getStartManifest() {
-  const { tsrStartManifest } = await import('../_/_tanstack-start-manifest_v-D_ynaWqj.mjs');
+  const { tsrStartManifest } = await import('../_/_tanstack-start-manifest_v-C8UJqx1F.mjs');
   const startManifest = tsrStartManifest();
   const rootRoute = startManifest.routes[rootRouteId] = startManifest.routes[rootRouteId] || {};
   rootRoute.assets = rootRoute.assets || [];
@@ -3199,18 +3199,6 @@ const manifest = { "c9d51a5243700889c80f82ed57a4ce74b25f188e5ebd534c9c64965dc44e
 }, "34a400ef155cae4517b50b99a6f1db6819e2090dea5a8bc25de22b442e6347a4": {
   functionName: "addTodo_createServerFn_handler",
   importer: () => import('../_/start.server-funcs-DId4vaUL.mjs')
-}, "03960d6fd89b35fe9547af9de06a203cd25e2b4ca3e6a687ee664efca51f147c": {
-  functionName: "createClientServerFn_createServerFn_handler",
-  importer: () => import('../_/client-fn-CqCq8gds.mjs')
-}, "3350d09b92c1792aeccfa21992cd3061ac1250e4d15f30fbab96fbc07394db42": {
-  functionName: "loadClientsServerFn_createServerFn_handler",
-  importer: () => import('../_/client-fn-CqCq8gds.mjs')
-}, "50e4b59fe268685ff6bd59fa4f0d6f6733bbd8f9ff291ac95d940ac816161a00": {
-  functionName: "updateClientServerFn_createServerFn_handler",
-  importer: () => import('../_/client-fn-CqCq8gds.mjs')
-}, "ab3996f6727fdd28ce1c2ddafefde0ed34b6ed2cbc7ee630d619ffc303805ea2": {
-  functionName: "deleteClientServerFn_createServerFn_handler",
-  importer: () => import('../_/client-fn-CqCq8gds.mjs')
 }, "314aafe3c67b13ba2756744c451fde4d04b64f9fab9da6d47eb411383be27f9e": {
   functionName: "createInvoiceServerFn_createServerFn_handler",
   importer: () => import('../_/invoices-fn-B7ewkRoc.mjs')
@@ -3223,6 +3211,18 @@ const manifest = { "c9d51a5243700889c80f82ed57a4ce74b25f188e5ebd534c9c64965dc44e
 }, "d56cb0c945c4889ec7422fe5a78b1e7b799f29a4f93345404554b61f7a9b907c": {
   functionName: "deleteInvoiceServerFn_createServerFn_handler",
   importer: () => import('../_/invoices-fn-B7ewkRoc.mjs')
+}, "03960d6fd89b35fe9547af9de06a203cd25e2b4ca3e6a687ee664efca51f147c": {
+  functionName: "createClientServerFn_createServerFn_handler",
+  importer: () => import('../_/client-fn-CqCq8gds.mjs')
+}, "3350d09b92c1792aeccfa21992cd3061ac1250e4d15f30fbab96fbc07394db42": {
+  functionName: "loadClientsServerFn_createServerFn_handler",
+  importer: () => import('../_/client-fn-CqCq8gds.mjs')
+}, "50e4b59fe268685ff6bd59fa4f0d6f6733bbd8f9ff291ac95d940ac816161a00": {
+  functionName: "updateClientServerFn_createServerFn_handler",
+  importer: () => import('../_/client-fn-CqCq8gds.mjs')
+}, "ab3996f6727fdd28ce1c2ddafefde0ed34b6ed2cbc7ee630d619ffc303805ea2": {
+  functionName: "deleteClientServerFn_createServerFn_handler",
+  importer: () => import('../_/client-fn-CqCq8gds.mjs')
 }, "ac3f1acd0bb73b05133b8943d146f8edcb51aa8193090b6c22b4d1d74390c189": {
   functionName: "createFournisseurServerFn_createServerFn_handler",
   importer: () => import('../_/fourniseur-fn-DOqI3ju_.mjs')
@@ -3523,7 +3523,7 @@ function createStartHandler(cb) {
   let routerEntry = null;
   const getEntries = async () => {
     if (routerEntry === null) {
-      routerEntry = await import('../_/router-O-vE69VZ.mjs').then((n) => n.r);
+      routerEntry = await import('../_/router-oK1GuEd9.mjs').then((n) => n.r);
     }
     if (startEntry === null) {
       startEntry = await import('../_/start-HYkvq4Ni.mjs');

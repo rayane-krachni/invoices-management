@@ -40,6 +40,7 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
     nis: "",
     nif: "",
     rc: "",
+    capital: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -106,9 +107,8 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
                 type="text"
                 value={model.fullName}
                 onChange={(e) => updateField("fullName", e.target.value)}
-                className={`mt-1 w-full border rounded px-2 py-1 ${
-                  errors.fullName ? "border-red-500" : ""
-                }`}
+                className={`mt-1 w-full border rounded px-2 py-1 ${errors.fullName ? "border-red-500" : ""
+                  }`}
               />
               {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName}</p>}
             </div>
@@ -120,9 +120,8 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
                 type="text"
                 value={model.address}
                 onChange={(e) => updateField("address", e.target.value)}
-                className={`mt-1 w-full border rounded px-2 py-1 ${
-                  errors.address ? "border-red-500" : ""
-                }`}
+                className={`mt-1 w-full border rounded px-2 py-1 ${errors.address ? "border-red-500" : ""
+                  }`}
               />
               {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
             </div>
@@ -133,9 +132,8 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
               <select
                 value={model.willaya}
                 onChange={(e) => updateField("willaya", e.target.value)}
-                className={`mt-1 w-full border rounded px-2 py-1 ${
-                  errors.willaya ? "border-red-500" : ""
-                }`}
+                className={`mt-1 w-full border rounded px-2 py-1 ${errors.willaya ? "border-red-500" : ""
+                  }`}
               >
                 <option value="">-- Sélectionner une wilaya --</option>
                 {WILAYAS.map((w) => (
@@ -145,10 +143,10 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
               {errors.willaya && <p className="text-red-500 text-sm">{errors.willaya}</p>}
             </div>
 
- 
+
 
             {/* Optional fields */}
-            {["activity", "art", "nis", "nif", "rc"].map((field) => (
+            {["activity", "art", "nis", "nif", "rc", "capital"].map((field) => (
               <div key={field}>
                 <label className="block font-medium capitalize">
                   {field.toUpperCase()}

@@ -387,6 +387,8 @@ const AddInvoiceModal = ({ isOpen, onClose }) => {
   const [model, setModel] = useState({
     clientId: "",
     fournisseurId: "",
+    clientName: "",
+    fournisseurName: "",
     invoiceNumber: "",
     invoiceType: "",
     date: (/* @__PURE__ */ new Date()).toISOString().slice(0, 10),
@@ -1006,8 +1008,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "#2D3748",
-    marginTop: 15,
-    marginBottom: 2,
+    marginTop: 5,
+    marginBottom: 5,
     paddingBottom: 1,
     borderBottomWidth: 1,
     borderBottomColor: "#E2E8F0"
@@ -1017,8 +1019,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderWidth: 1,
     borderColor: "#E2E8F0",
-    marginTop: 2,
-    marginBottom: 2
+    marginTop: 1,
+    marginBottom: 1
   },
   tableHeader: {
     flexDirection: "row",
@@ -1026,7 +1028,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF"
   },
   tableHeaderCell: {
-    padding: 3,
+    padding: 1,
     fontSize: 8,
     fontWeight: "bold",
     color: "#0b0b0bff",
@@ -1047,12 +1049,12 @@ const styles = StyleSheet.create({
   },
   // Column widths
   colCode: { width: "10%" },
-  colProduct: { width: "35%" },
+  colProduct: { width: "30%" },
   colDescription: { width: "25%" },
   colQty: { width: "10%", textAlign: "center" },
-  colPrice: { width: "20%", textAlign: "right" },
+  colPrice: { width: "20%", textAlign: "center" },
   colTax: { width: "10%", textAlign: "center" },
-  colTotalHT: { width: "13%", textAlign: "right", borderRightWidth: 0 },
+  colTotalHT: { width: "20%", textAlign: "center", borderRightWidth: 0 },
   // Totals Section
   totalsContainer: {
     flexDirection: "row",
@@ -1345,7 +1347,10 @@ const InvoicePDF = ({ invoice }) => {
     /* @__PURE__ */ jsxs(View, { style: styles.signatureSection, children: [
       /* @__PURE__ */ jsxs(View, { style: styles.totalWords, children: [
         /* @__PURE__ */ jsx(Text, { style: styles.letterTitle, children: "Total en lettre" }),
-        /* @__PURE__ */ jsx(Text, { children: amountToFrenchWords(invoice.totalTTC) })
+        /* @__PURE__ */ jsxs(Text, { children: [
+          amountToFrenchWords(invoice.totalTTC),
+          " "
+        ] })
       ] }),
       /* @__PURE__ */ jsx(View, { children: /* @__PURE__ */ jsx(Text, { style: styles.signatureTitle, children: "Signature" }) })
     ] })
@@ -1386,6 +1391,8 @@ const UpadateInvoiceModal = ({ invoice, isOpen, onClose, onUpdate }) => {
   const [model, setModel] = useState({
     clientId: "",
     fournisseurId: "",
+    clientName: "",
+    fournisseurName: "",
     invoiceNumber: "",
     invoiceType: "",
     date: (/* @__PURE__ */ new Date()).toISOString().slice(0, 10),
@@ -1496,9 +1503,9 @@ const UpadateInvoiceModal = ({ invoice, isOpen, onClose, onUpdate }) => {
         id: data.invoice.id,
         invoiceNumber: model.invoiceNumber ?? "",
         invoiceType: model.invoiceType ?? "",
-        client: model.clientId,
-        fournisseur: model.fournisseurId,
-        date: "",
+        client: JSON.stringify({ id: model.clientId, name: model.clientName }),
+        fournisseur: JSON.stringify({ id: model.fournisseurId, name: model.fournisseurName }),
+        date: model.date,
         paymentMode: model.paymentMode ?? "",
         totalHT: totalsCalc.totalHT.toFixed(2),
         totalTVA: totalsCalc.totalTVA.toFixed(2),
@@ -1541,9 +1548,14 @@ const UpadateInvoiceModal = ({ invoice, isOpen, onClose, onUpdate }) => {
       }
     }
     fetchData();
+    console.log("-----invoice", invoice.client.id);
+    const client = typeof invoice.client === "string" ? JSON.parse(invoice.client) : invoice.client;
+    const fournisseur = typeof invoice.fournisseur === "string" ? JSON.parse(invoice.fournisseur) : invoice.fournisseur;
     setModel({
-      clientId: invoice.client?.id || "",
-      fournisseurId: invoice.fournisseur?.id || "",
+      clientName: invoice.client?.fullName || client.name,
+      fournisseurName: invoice.fournisseur?.fullName || fournisseur.name,
+      clientId: invoice.client?.id || client.id,
+      fournisseurId: invoice.fournisseur?.id || fournisseur.id,
       invoiceNumber: invoice.invoiceNumber || "",
       invoiceType: invoice.invoiceType || "",
       date: invoice.date ? invoice.date.split("/").reverse().join("-") : (/* @__PURE__ */ new Date()).toISOString().slice(0, 10),
@@ -1685,12 +1697,16 @@ const UpadateInvoiceModal = ({ invoice, isOpen, onClose, onUpdate }) => {
                 "select",
                 {
                   className: "w-full border rounded px-2 py-1",
-                  value: model.clientId,
-                  onChange: (e) => updateField("clientId", e.target.value),
+                  value: model.clientId ? JSON.stringify({ id: model.clientId, name: model.clientName }) : "",
+                  onChange: (e) => {
+                    const { id, name } = JSON.parse(e.target.value);
+                    updateField("clientId", id);
+                    updateField("clientName", name);
+                  },
                   required: true,
                   children: [
                     /* @__PURE__ */ jsx("option", { value: "", children: "S\xE9lectionner un client" }),
-                    filteredClients.map((c) => /* @__PURE__ */ jsx("option", { value: c.id, children: c.fullName }, c.id))
+                    filteredClients.map((c) => /* @__PURE__ */ jsx("option", { value: JSON.stringify({ id: c.id, name: c.fullName }), children: c.fullName }, c.id))
                   ]
                 }
               )
@@ -1714,11 +1730,15 @@ const UpadateInvoiceModal = ({ invoice, isOpen, onClose, onUpdate }) => {
                 "select",
                 {
                   className: "w-full border rounded px-2 py-1",
-                  value: model.fournisseurId,
-                  onChange: (e) => updateField("fournisseurId", e.target.value),
+                  value: model.fournisseurId ? JSON.stringify({ id: model.fournisseurId, name: model.fournisseurName }) : "",
+                  onChange: (e) => {
+                    const { id, name } = JSON.parse(e.target.value);
+                    updateField("fournisseurId", id);
+                    updateField("fournisseurName", name);
+                  },
                   children: [
                     /* @__PURE__ */ jsx("option", { value: "", children: "S\xE9lectionner un fournisseur" }),
-                    filteredFournisseurs.map((f) => /* @__PURE__ */ jsx("option", { value: f.id, children: f.fullName }, f.id))
+                    filteredFournisseurs.map((f) => /* @__PURE__ */ jsx("option", { value: JSON.stringify({ id: f.id, name: f.fullName }), children: f.fullName }, f.id))
                   ]
                 }
               )
@@ -1891,7 +1911,7 @@ const InvoicesPage = () => {
     }
   };
   const handleUpdate = (updatedInvoice) => {
-    alert(updatedInvoice?.chauffeurName);
+    console.log("Updated Invoice:", updatedInvoice);
     setInvoices(
       (prev) => prev.map((f) => f.id === updatedInvoice.id ? updatedInvoice : f)
     );
@@ -1970,7 +1990,7 @@ const InvoicesPage = () => {
     ] }),
     /* @__PURE__ */ jsx("div", { className: "bg-white rounded-xl shadow-lg border border-blue-100 overflow-x-auto", children: loading ? /* @__PURE__ */ jsx("p", { className: "text-center py-8 text-gray-500", children: "Chargement des factures..." }) : filteredInvoices.length === 0 ? /* @__PURE__ */ jsx("p", { className: "text-center py-8 text-gray-500", children: "Aucune facture trouv\xE9e." }) : /* @__PURE__ */ jsx("div", { className: "min-w-[900px] md:min-w-full", children: /* @__PURE__ */ jsxs(Table, { className: "text-xs md:text-sm", children: [
       /* @__PURE__ */ jsx(TableHeader, { className: "bg-blue-50", children: /* @__PURE__ */ jsxs(TableRow, { children: [
-        /* @__PURE__ */ jsx(TableHead, { children: "ID" }),
+        /* @__PURE__ */ jsx(TableHead, { children: "Numero" }),
         /* @__PURE__ */ jsx(TableHead, { children: "Date" }),
         /* @__PURE__ */ jsx(TableHead, { children: "Type" }),
         /* @__PURE__ */ jsx(TableHead, { children: "Client" }),
@@ -1985,59 +2005,64 @@ const InvoicesPage = () => {
         /* @__PURE__ */ jsx(TableHead, { children: "Plaque" }),
         /* @__PURE__ */ jsx(TableHead, { children: "Actions" })
       ] }) }),
-      /* @__PURE__ */ jsx(TableBody, { children: filteredInvoices.map((inv, index) => /* @__PURE__ */ jsxs(
-        TableRow,
-        {
-          className: "hover:bg-blue-50 transition-colors",
-          children: [
-            /* @__PURE__ */ jsx(TableCell, { children: index + 1 }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.date }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.invoiceType }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.client.fullName }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.fournisseur.fullName }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.items.length }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.totalHT }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.totalTVA }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.totalTTC }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.discountAmount }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.chauffeurName }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.chauffeurPhone }),
-            /* @__PURE__ */ jsx(TableCell, { children: inv.transportLicense }),
-            /* @__PURE__ */ jsx(TableCell, { children: /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
-              /* @__PURE__ */ jsx(
-                Button,
-                {
-                  size: "sm",
-                  variant: "outline",
-                  className: "hover:bg-blue-100",
-                  onClick: () => handleEdit(inv),
-                  children: /* @__PURE__ */ jsx(FaEdit, { className: "text-blue-600" })
-                }
-              ),
-              /* @__PURE__ */ jsx(
-                Button,
-                {
-                  size: "sm",
-                  variant: "outline",
-                  onClick: () => handleView(inv),
-                  children: /* @__PURE__ */ jsx(FaEye, {})
-                }
-              ),
-              /* @__PURE__ */ jsx(
-                Button,
-                {
-                  size: "sm",
-                  variant: "destructive",
-                  disabled: deletingId === inv.id,
-                  onClick: () => handleDelete(inv.id),
-                  children: /* @__PURE__ */ jsx(FaTrash, {})
-                }
-              )
-            ] }) })
-          ]
-        },
-        inv.id
-      )) })
+      /* @__PURE__ */ jsx(TableBody, { children: filteredInvoices.map((inv, index) => {
+        const client = typeof inv.client === "string" ? JSON.parse(inv.client) : inv.client;
+        const fournisseur = typeof inv.fournisseur === "string" ? JSON.parse(inv.fournisseur) : inv.fournisseur;
+        return /* @__PURE__ */ jsxs(
+          TableRow,
+          {
+            className: "hover:bg-blue-50 transition-colors",
+            children: [
+              /* @__PURE__ */ jsx(TableCell, { children: inv.invoiceNumber }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.date }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.invoiceType }),
+              /* @__PURE__ */ jsx(TableCell, { children: client.fullName ?? client.name }),
+              /* @__PURE__ */ jsx(TableCell, { children: fournisseur.fullName ?? fournisseur.name }),
+              " ",
+              /* @__PURE__ */ jsx(TableCell, { children: inv.items.length }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.totalHT }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.totalTVA }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.totalTTC }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.discountAmount }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.chauffeurName }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.chauffeurPhone }),
+              /* @__PURE__ */ jsx(TableCell, { children: inv.transportLicense }),
+              /* @__PURE__ */ jsx(TableCell, { children: /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    size: "sm",
+                    variant: "outline",
+                    className: "hover:bg-blue-100",
+                    onClick: () => handleEdit(inv),
+                    children: /* @__PURE__ */ jsx(FaEdit, { className: "text-blue-600" })
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    size: "sm",
+                    variant: "outline",
+                    onClick: () => handleView(inv),
+                    children: /* @__PURE__ */ jsx(FaEye, {})
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    size: "sm",
+                    variant: "destructive",
+                    disabled: deletingId === inv.id,
+                    onClick: () => handleDelete(inv.id),
+                    children: /* @__PURE__ */ jsx(FaTrash, {})
+                  }
+                )
+              ] }) })
+            ]
+          },
+          inv.id
+        );
+      }) })
     ] }) }) }),
     /* @__PURE__ */ jsx(
       AddInvoiceModal,
@@ -5757,7 +5782,7 @@ const DashboardPage = () => {
     year: "numeric"
   });
   const formattedTime = currentTime.toLocaleTimeString("fr-FR");
-  return /* @__PURE__ */ jsx(MainLayout, { children: /* @__PURE__ */ jsxs(GlobalCard, { title: "SCN Krachni Lahcen et fr\xE8res", description: "", children: [
+  return /* @__PURE__ */ jsx(MainLayout, { children: /* @__PURE__ */ jsxs(GlobalCard, { title: "SCN Krachni et fr\xE8res", description: "", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:flex-row justify-between items-center gap-4 mb-6", children: [
       /* @__PURE__ */ jsxs("h1", { className: "text-3xl font-bold flex items-center gap-2 text-blue-700", children: [
         /* @__PURE__ */ jsx(FaFileInvoice, {}),
@@ -5843,4 +5868,4 @@ function RouteComponent() {
 }
 
 export { RouteComponent as component };
-//# sourceMappingURL=dashboard-D5damhwm.mjs.map
+//# sourceMappingURL=dashboard-BeqN3vqU.mjs.map

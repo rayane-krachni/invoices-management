@@ -3,7 +3,7 @@ import { c as createSsrRpc } from './createSsrRpc-B7i2AQJQ.mjs';
 import fs from 'node:fs';
 import { useState, useCallback } from 'react';
 import { useRouter } from '@tanstack/react-router';
-import { R as Route$6 } from './router-O-vE69VZ.mjs';
+import { R as Route$6 } from './router-oK1GuEd9.mjs';
 import { a as createServerFn } from '../virtual/entry.mjs';
 import '../nitro/nitro.mjs';
 import 'node:http';
@@ -67,4 +67,4 @@ function Home() {
 }
 
 export { Home as component };
-//# sourceMappingURL=start.server-funcs-B2zYaptC.mjs.map
+//# sourceMappingURL=start.server-funcs-BspxAqgy.mjs.map

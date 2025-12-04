@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { PDFViewer } from "@react-pdf/renderer";
 import { InvoicePDF } from "./invoicePDF";
@@ -9,15 +9,16 @@ interface ViewInvoiceModalProps {
   onClose: () => void;
 }
 
-export const ViewInvoiceModal: React.FC<ViewInvoiceModalProps> = ({ isOpen, invoice, onClose }) => {
+const ViewInvoiceModal: React.FC<ViewInvoiceModalProps> = ({ isOpen, invoice, onClose }) => {
   if (!isOpen || !invoice) return null;
 
-  const formatDate = (date?: Date | string) =>
-    date ? new Date(date).toLocaleString() : "-";
+  const [hideLogo, setHideLogo] = useState(false);
 
-  // Memoize PDF document to prevent multiple renders
-  const pdfDocument = useMemo(() => <InvoicePDF invoice={invoice} />, [invoice]);
-
+  // Memoize PDF document to prevent unnecessary re-renders
+  const pdfDocument = useMemo(
+    () => <InvoicePDF invoice={invoice} hideLogo={hideLogo} />,
+    [invoice, hideLogo]
+  );
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -29,10 +30,23 @@ export const ViewInvoiceModal: React.FC<ViewInvoiceModalProps> = ({ isOpen, invo
           <FaTimes />
         </button>
 
-        <h2 className="text-2xl font-bold mb-4 text-blue-700">Détails de la facture</h2>
+        <h2 className="text-2xl font-bold mb-4 text-blue-700">
+          Détails de la facture
+        </h2>
 
+        <div className="flex items-center mb-4">
+          <input
+            type="checkbox"
+            id="hideLogo"
+            checked={hideLogo}
+            onChange={(e) => setHideLogo(e.target.checked)}
+            className="mr-2"
+          />
+          <label htmlFor="hideLogo" className="text-gray-700">
+            Masquer le logo
+          </label>
+        </div>
 
-        {/* PDF Viewer */}
         <div style={{ width: "100%", height: "80vh" }}>
           <PDFViewer style={{ width: "100%", height: "100%" }}>
             {pdfDocument}

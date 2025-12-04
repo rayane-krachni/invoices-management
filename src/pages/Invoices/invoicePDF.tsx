@@ -2,6 +2,9 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 import logo from '../../assets/logo.jpeg'
+
+const logoBase64 = logo;
+
 const UNITS = [
     "zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf"
 ];
@@ -101,7 +104,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 5,
-        paddingBottom: 15,
+        paddingBottom: 0,
         borderBottomWidth: 2,
         borderBottomColor: '#4A5568',
     },
@@ -114,15 +117,19 @@ const styles = StyleSheet.create({
         color: '#2D3748',
     },
     companyTagline: {
-        fontSize: 8,
-        color: '#718096',
+        fontSize: 9,
+        color: '#000000ff',
+        marginTop: 2,
+    },
+    companyTaglinebold: {
+        fontSize: 9,
+        fontWeight: 'bold',
+        color: '#000000ff',
         marginTop: 2,
     },
     qrPlaceholder: {
-        width: 50,
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#CBD5E0',
+        width: 80,
+        height: 80,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -201,12 +208,12 @@ const styles = StyleSheet.create({
     partyLabel: {
         fontSize: 8,
         fontWeight: 'bold',
-        color: '#4A5568',
+        color: '#000000ff',
         width: '35%',
     },
     partyValue: {
         fontSize: 8,
-        color: '#2D3748',
+        color: '#000000ff',
         width: '65%',
     },
     // Delivery Info
@@ -258,7 +265,7 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
     },
     tableHeaderCell: {
-        padding: 1,
+        padding: 3,
         fontSize: 8,
         fontWeight: 'bold',
         color: '#0b0b0bff',
@@ -272,7 +279,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E2E8F0',
     },
     tableCell: {
-        padding: 8,
+        padding: 2,
         fontSize: 8,
         borderRightWidth: 1,
         borderRightColor: '#E2E8F0',
@@ -301,7 +308,7 @@ const styles = StyleSheet.create({
     totalRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 8,
+        padding: 4,
         borderBottomWidth: 1,
         borderBottomColor: '#E2E8F0',
     },
@@ -419,6 +426,7 @@ const styles = StyleSheet.create({
 
 interface InvoicePDFProps {
     invoice: any & { items?: any[] };
+    hideLogo: boolean,
 }
 const getPaymentMode = (mode: string) => {
 
@@ -442,7 +450,7 @@ const getPaymentMode = (mode: string) => {
 }
 
 
-export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
+export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, hideLogo }) => {
     const formatDate = (date: any) => {
         if (!date) return "";
 
@@ -470,14 +478,18 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                         <Text style={styles.companyTagline}>
                             {invoice.fournisseur?.activity || 'Commerce de détail'}
                         </Text>
+                        <Text style={styles.companyTaglinebold}>
+                            Au CAPITAL SOCIAL DE  {invoice.fournisseur?.capital}
+                        </Text>
                     </View>
-                    <View style={styles.qrPlaceholder}>
+                    <View >
                         <Image
-                            src={logo}
-                            style={{ width: 60, height: 60, objectFit: 'contain' }}
+                            src={!hideLogo ? logoBase64 : ""}
+                            style={{ width: 80, height: 80, objectFit: 'cover' }}
                         />
                     </View>
                 </View>
+
 
                 {/* Document Title */}
                 <Text style={styles.documentTitle}>
@@ -514,7 +526,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                             ['Nom', invoice.fournisseur?.fullName],
                             ['Activité', invoice.fournisseur?.activity],
                             ['Adresse', invoice.fournisseur?.address],
-                            ['Téléphone', invoice.fournisseur?.phone],
+
                             ['Art', invoice.fournisseur?.art],
                             ['NIS', invoice.fournisseur?.nis],
                             ['NIF', invoice.fournisseur?.nif],
@@ -534,7 +546,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
                             ['Nom', invoice.client?.fullName],
                             ['Activité', invoice.client?.activity],
                             ['Adresse', invoice.client?.address],
-                            ['Téléphone', invoice.client?.phone],
+                            // ['Téléphone', invoice.client?.phone],
                             ['Art', invoice.client?.art],
                             ['NIS', invoice.client?.nis],
                             ['NIF', invoice.client?.nif],
@@ -568,93 +580,94 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
 
                 {/* Section Title */}
                 <Text style={styles.sectionTitle}>DÉTAILS DE LA FACTURE</Text>
+                <View style={{ height: 'auto', justifyContent: 'space-between' }}>
 
-                {/* Products Table */}
-                <View style={styles.table}>
-                    {/* HEADER ROW */}
-                    <View style={styles.tableHeader}>
-                        <Text style={[styles.tableHeaderCell, styles.colCode]}>Code</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colProduct]}>Produit</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colQty]}>Qté</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colPrice]}>Prix Unit.</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colTax]}>TVA (%)</Text>
-                        <Text style={[styles.tableHeaderCell, styles.colTotalHT]}>Total HT</Text>
+                    {/* Products Table */}
+                    <View style={styles.table}>
+                        {/* HEADER ROW */}
+                        <View style={styles.tableHeader}>
+                            <Text style={[styles.tableHeaderCell, styles.colCode]}>Code</Text>
+                            <Text style={[styles.tableHeaderCell, styles.colProduct]}>Produit</Text>
+                            <Text style={[styles.tableHeaderCell, styles.colQty]}>Qté</Text>
+                            <Text style={[styles.tableHeaderCell, styles.colPrice]}>Prix Unit.</Text>
+                            <Text style={[styles.tableHeaderCell, styles.colTax]}>TVA (%)</Text>
+                            <Text style={[styles.tableHeaderCell, styles.colTotalHT]}>Total HT</Text>
+                        </View>
+
+                        {/* BODY ROWS */}
+                        {invoice.items?.map((item: any, index: number) => {
+                            const quantity = Number(item.item?.quantity || 0);
+                            const unitPrice = Number(item.unitPrice || item.product?.price || 0);
+                            const taxRate = Number(item.taxRate || item.product?.tva || 0);
+                            const totalHT = unitPrice * quantity;
+
+                            return (
+                                <View key={item.id || index} style={styles.tableRow}>
+                                    <Text style={[styles.tableCell, styles.colCode]}>
+                                        {item.product?.code || `PROD-${index + 1}`}
+                                    </Text>
+
+                                    <Text style={[styles.tableCell, styles.colProduct]}>
+                                        {item.product?.name || 'Article'}
+                                    </Text>
+
+                                    <Text style={[styles.tableCell, styles.colQty]}>
+                                        {quantity}
+                                    </Text>
+
+                                    <Text style={[styles.tableCell, styles.colPrice]}>
+                                        {unitPrice.toFixed(2)} DA
+                                    </Text>
+
+                                    <Text style={[styles.tableCell, styles.colTax]}>
+                                        {taxRate.toFixed(2)}
+                                    </Text>
+
+                                    <Text style={[styles.tableCell, styles.colTotalHT]}>
+                                        {totalHT.toFixed(2)} DA
+                                    </Text>
+                                </View>
+                            );
+                        })}
                     </View>
 
-                    {/* BODY ROWS */}
-                    {invoice.items?.map((item: any, index: number) => {
-                        const quantity = Number(item.item?.quantity || 0);
-                        const unitPrice = Number(item.unitPrice || item.product?.price || 0);
-                        const taxRate = Number(item.taxRate || item.product?.tva || 0);
-                        const totalHT = unitPrice * quantity;
 
-                        return (
-                            <View key={item.id || index} style={styles.tableRow}>
-                                <Text style={[styles.tableCell, styles.colCode]}>
-                                    {item.product?.code || `PROD-${index + 1}`}
-                                </Text>
-
-                                <Text style={[styles.tableCell, styles.colProduct]}>
-                                    {item.product?.name || 'Article'}
-                                </Text>
-
-                                <Text style={[styles.tableCell, styles.colQty]}>
-                                    {quantity}
-                                </Text>
-
-                                <Text style={[styles.tableCell, styles.colPrice]}>
-                                    {unitPrice.toFixed(2)} DA
-                                </Text>
-
-                                <Text style={[styles.tableCell, styles.colTax]}>
-                                    {taxRate.toFixed(2)}
-                                </Text>
-
-                                <Text style={[styles.tableCell, styles.colTotalHT]}>
-                                    {totalHT.toFixed(2)} DA
-                                </Text>
+                    {/* Totals Section */}
+                    <View style={styles.totalsContainer}>
+                        <View style={styles.totalsBox}>
+                            <View style={styles.totalRow}>
+                                <Text style={styles.totalLabel}>Total HT</Text>
+                                <Text style={styles.totalValue}>{invoice.totalHT || '0.00'} DA</Text>
                             </View>
-                        );
-                    })}
-                </View>
+                            <View style={styles.totalRow}>
+                                <Text style={styles.totalLabel}>Total TVA</Text>
+                                <Text style={styles.totalValue}>{invoice.totalTVA || '0.00'} DA</Text>
+                            </View>
 
+                            <View style={[styles.totalRow, styles.totalFinalRow]}>
+                                <Text style={styles.totalFinalLabel}>TOTAL TTC</Text>
+                                <Text style={styles.totalFinalValue}>{invoice.totalTTC} DA</Text>
+                            </View>
 
-                {/* Totals Section */}
-                <View style={styles.totalsContainer}>
-                    <View style={styles.totalsBox}>
-                        <View style={styles.totalRow}>
-                            <Text style={styles.totalLabel}>Total HT</Text>
-                            <Text style={styles.totalValue}>{invoice.totalHT || '0.00'} DA</Text>
-                        </View>
-                        <View style={styles.totalRow}>
-                            <Text style={styles.totalLabel}>Total TVA</Text>
-                            <Text style={styles.totalValue}>{invoice.totalTVA || '0.00'} DA</Text>
-                        </View>
-
-                        <View style={[styles.totalRow, styles.totalFinalRow]}>
-                            <Text style={styles.totalFinalLabel}>TOTAL TTC</Text>
-                            <Text style={styles.totalFinalValue}>{invoice.totalTTC} DA</Text>
                         </View>
 
                     </View>
 
-                </View>
 
 
+                    {/* Signature Section */}
+                    <View style={styles.signatureSection}>
+                        {/* // */}
+                        <View style={styles.totalWords}>
+                            <Text style={styles.letterTitle}>Total en lettre</Text>
+                            <Text>{amountToFrenchWords(invoice.totalTTC)} </Text>
+                        </View>
+                        <View>
+                            <Text style={styles.signatureTitle}>Signature</Text>
 
-                {/* Signature Section */}
-                <View style={styles.signatureSection}>
-                    {/* // */}
-                    <View style={styles.totalWords}>
-                        <Text style={styles.letterTitle}>Total en lettre</Text>
-                        <Text>{amountToFrenchWords(invoice.totalTTC)} </Text>
+                        </View>
                     </View>
-                    <View>
-                        <Text style={styles.signatureTitle}>Signature</Text>
-
-                    </View>
                 </View>
-
             </Page>
         </Document>
     );

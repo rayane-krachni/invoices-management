@@ -7,6 +7,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { z } from "zod";
+import { ca } from "zod/v4/locales";
 
 // PostgreSQL table schema
 export const fournisseurs = pgTable(
@@ -22,6 +23,7 @@ export const fournisseurs = pgTable(
     nis: varchar("nis", { length: 50 }).default(""),
     nif: varchar("nif", { length: 50 }).default(""),
     rc: varchar("rc", { length: 50 }).default(""),
+    capital: varchar("capital", { length: 50 }).default(""),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
   },
@@ -37,6 +39,7 @@ export const fournisseurSchema = z.object({
   address: z.string().min(1).max(250),
   willaya: z.string().min(1).max(100),
   phone: z.string().min(1).max(20),
+  capital: z.string().nullable(),
   activity: z.string().nullable(),
   art: z.string().nullable(),
   nis: z.string().nullable(),

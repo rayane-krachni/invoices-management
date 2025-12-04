@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useMutation } from "@/hooks/use-mutation";
 import { updateFournisseurServerFn } from "@/server/fourniseur-fn";
+import { ca } from "zod/v4/locales";
 
 export interface FournisseurModel {
   id: string;
@@ -13,6 +14,7 @@ export interface FournisseurModel {
   nis?: string;
   nif?: string;
   rc?: string;
+  capital?: string;
 }
 
 interface UpdateFournisseurModalProps {
@@ -58,6 +60,7 @@ export const UpdateFournisseurModal: React.FC<UpdateFournisseurModalProps> = ({
             nis: data.nis ?? "",
             nif: data.nif ?? "",
             rc: data.rc ?? "",
+            capital: data.capital ?? "",
           },
         },
       }).then((res) => ({
@@ -70,6 +73,7 @@ export const UpdateFournisseurModal: React.FC<UpdateFournisseurModalProps> = ({
           nif: res.fournisseur.nif ?? undefined,
           rc: res.fournisseur.rc ?? undefined,
           updatedAt: res.fournisseur.updatedAt ?? undefined,
+          capital: res.fournisseur.capital ?? undefined,
         },
       })),
     onSuccess: ({ data }) => {

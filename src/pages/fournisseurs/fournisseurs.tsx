@@ -42,6 +42,7 @@ const FournisseurPage = () => {
         nis: fournisseur.nis ?? undefined,
         nif: fournisseur.nif ?? undefined,
         rc: fournisseur.rc ?? undefined,
+        capital: fournisseur.capital ?? undefined,
       }));
 
       setFournisseurs(normalizedData);
@@ -165,7 +166,7 @@ const FournisseurPage = () => {
                 >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">{fournisseur.fullName}</TableCell>
-             
+
                   <TableCell>{fournisseur.art}</TableCell>
                   <TableCell>{fournisseur.nis}</TableCell>
                   <TableCell>{fournisseur.nif}</TableCell>
