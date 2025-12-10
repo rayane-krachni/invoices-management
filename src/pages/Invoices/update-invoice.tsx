@@ -14,14 +14,15 @@ const uid = (prefix = "") => `${prefix}${Math.random().toString(36).slice(2, 9)}
 
 
 /* ---------- Calculs ---------- */
-const calculateLineTotal = (item: InvoiceLineItem) => {
-    const base = item.quantity * item.unitPrice;
+const calculateLineTotal = (item: InvoiceLineItem, useSalePrice: boolean) => {
+    const base = useSalePrice ? item.quantity * item.salePrice : item.quantity * item.unitPrice;
+
     const tax = item.taxRate ? (base * item.taxRate) / 100 : 0;
     return { base, tax, total: base + tax };
 };
 
-const calculateInvoiceTotals = (invoice: InvoiceCreateModel) => {
-    const lines = invoice.items.map(calculateLineTotal);
+const calculateInvoiceTotals = (invoice: InvoiceCreateModel, useSalePrice: boolean) => {
+    const lines = invoice.items.map(item => calculateLineTotal(item, useSalePrice));
     const totalHT = lines.reduce((s, l) => s + l.base, 0);
     const totalTVA = lines.reduce((s, l) => s + l.tax, 0);
     const discount = invoice.discountAmount ?? 0;
@@ -65,7 +66,7 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
     const [fournisseurSearch, setFournisseurSearch] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const totals = useMemo(() => calculateInvoiceTotals(model), [model]);
+    const totals = useMemo(() => calculateInvoiceTotals(model, useSalePrice), [model]);
 
     const updateField = <K extends keyof InvoiceCreateModel>(key: K, value: InvoiceCreateModel[K]) =>
         setModel((m) => ({ ...m, [key]: value }));
