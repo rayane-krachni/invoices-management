@@ -22,6 +22,27 @@
       "when": 1764847020954,
       "tag": "0002_dry_phalanx",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1765361676641,
+      "tag": "0003_goofy_speed",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1765374334959,
+      "tag": "0004_goofy_krista_starr",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1765376751134,
+      "tag": "0005_useful_deadpool",
+      "breakpoints": true
     }
   ]
 }

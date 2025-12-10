@@ -14,12 +14,13 @@ interface AddProductModalProps {
 // ✅ Define ProductCreateModel by omitting auto-generated fields
 type ProductCreateModel = Omit<NewProduct, "id" | "createdAt" | "updatedAt">;
 
-export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose ,onCreate}) => {
+export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onCreate }) => {
   const [model, setModel] = useState<ProductCreateModel>({
     code: "",
     name: "",
     price: "0",
     tva: "0",
+    salePrice: "0"
   });
 
   // ✅ Mutation hook for product creation
@@ -105,6 +106,18 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
                 step={0.01}
                 value={model.price}
                 onChange={(e) => updateField("price", e.target.value)}
+                required
+                className="mt-1 w-full border rounded px-2 py-1"
+              />
+            </div>
+            <div>
+              <label className="block font-medium">Prix d'achat *</label>
+              <input
+                type="number"
+                min={0}
+                step={0.01}
+                value={model.salePrice}
+                onChange={(e) => updateField("salePrice", e.target.value)}
                 required
                 className="mt-1 w-full border rounded px-2 py-1"
               />

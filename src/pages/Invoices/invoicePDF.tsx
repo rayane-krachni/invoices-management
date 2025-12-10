@@ -108,6 +108,11 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         borderBottomColor: '#4A5568',
     },
+    headerTitle: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     logoSection: {
         flexDirection: 'column',
     },
@@ -117,6 +122,7 @@ const styles = StyleSheet.create({
         color: '#2D3748',
     },
     companyTagline: {
+        fontWeight: "bold",
         fontSize: 9,
         color: '#000000ff',
         marginTop: 2,
@@ -470,17 +476,32 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, hideLogo }) => 
         <Document>
             <Page size="A4" style={styles.page}>
                 {/* Header with Logo and QR */}
+                <View style={styles.headerTitle}>
+                    <Text style={styles.companyName}>
+                        {invoice.fournisseur?.fullName || 'Nom de l\'entreprise'}
+                    </Text>
+                    <Text style={styles.companyTaglinebold}>
+                        Au CAPITAL SOCIAL DE  {invoice.fournisseur?.capital}
+                    </Text>
+                </View>
+
+
                 <View style={styles.headerContainer}>
                     <View style={styles.logoSection}>
-                        <Text style={styles.companyName}>
-                            {invoice.fournisseur?.fullName || 'Nom de l\'entreprise'}
-                        </Text>
+
                         <Text style={styles.companyTagline}>
                             {invoice.fournisseur?.activity || 'Commerce de détail'}
                         </Text>
-                        <Text style={styles.companyTaglinebold}>
-                            Au CAPITAL SOCIAL DE  {invoice.fournisseur?.capital}
+
+
+                        <Text style={styles.companyTagline}>
+                            Tel:  {invoice.fournisseur?.phone}
                         </Text>
+
+                        <Text style={styles.companyTagline}>
+                            Email:  {invoice.fournisseur?.email}
+                        </Text>
+
                     </View>
                     <View >
                         <Image
@@ -488,6 +509,7 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice, hideLogo }) => 
                             style={{ width: 80, height: 80, objectFit: 'cover' }}
                         />
                     </View>
+
                 </View>
 
 

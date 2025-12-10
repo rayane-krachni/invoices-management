@@ -9,6 +9,7 @@ export interface ProductModel {
   code: string;
   name: string;
   price: number;
+  salePrice: number;
   tva: number;
 }
 
@@ -32,39 +33,41 @@ const UpdateProductModal: React.FC<UpdateProductModalProps> = ({
   }, [product]);
 
 
-const updateProductMutation = useMutation<
-  ProductModel & { id: string },
-  { success: true; product: ProductModel },
-  Error
->({
-  fn: (data) =>
-    updateProductServerFn({
-      data: {
-        id: data.id,
-        formData: {
-          code: data.code,
-          name: data.name,
-          price: data.price,
-          tva: data.tva,
+  const updateProductMutation = useMutation<
+    ProductModel & { id: string },
+    { success: true; product: ProductModel },
+    Error
+  >({
+    fn: (data) =>
+      updateProductServerFn({
+        data: {
+          id: data.id,
+          formData: {
+            code: data.code,
+            name: data.name,
+            price: data.price,
+            salePrice: data.salePrice,
+            tva: data.tva,
+          },
         },
-      },
-    }).then((res) => ({
-      success: res.success,
-      product: {
-        ...res.product,
-        price: Number(res.product.price), // convert string to number
-        tva: Number(res.product.tva),     // convert string to number
-      },
-    })),
-  onSuccess: ({ data }) => {
-    alert("Produit mis à jour avec succès!");
-    onUpdate(data.product);
-    onClose();
-  },
-  onFailure: ({ error }) => {
-    alert("Échec de la mise à jour du produit: " + error.message);
-  },
-});
+      }).then((res) => ({
+        success: res.success,
+        product: {
+          ...res.product,
+          price: Number(res.product.price), // convert string to number
+          salePrice: Number(res.product.salePrice),
+          tva: Number(res.product.tva),     // convert string to number
+        },
+      })),
+    onSuccess: ({ data }) => {
+      alert("Produit mis à jour avec succès!");
+      onUpdate(data.product);
+      onClose();
+    },
+    onFailure: ({ error }) => {
+      alert("Échec de la mise à jour du produit: " + error.message);
+    },
+  });
 
 
 
@@ -75,7 +78,7 @@ const updateProductMutation = useMutation<
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (model) {
-       updateProductMutation.mutate(model);
+      updateProductMutation.mutate(model);
     }
   };
 
@@ -129,6 +132,18 @@ const updateProductMutation = useMutation<
                 className="mt-1 w-full border rounded px-2 py-1"
               />
             </div>
+            <div>
+              <label className="block font-medium">Prix d'achat *</label>
+              <input
+                type="number"
+                min={0}
+                step={0.01}
+                value={model.salePrice}
+                onChange={(e) => updateField("salePrice", Number(e.target.value))}
+                required
+                className="mt-1 w-full border rounded px-2 py-1"
+              />
+            </div>
 
             <div>
               <label className="block font-medium">TVA (%) *</label>
@@ -146,7 +161,7 @@ const updateProductMutation = useMutation<
 
           <button
             type="submit"
-         
+
             className="bg-blue-600 text-white font-bold px-4 py-2 rounded shadow hover:bg-blue-700 w-full md:w-auto"
           >
             {updateProductMutation.status === "pending" ? "Mise à jour..." : "Mettre à jour le produit"}

@@ -1,0 +1,1 @@
+ALTER TABLE "invoices" ADD COLUMN "use_sale_price" boolean DEFAULT false NOT NULL;

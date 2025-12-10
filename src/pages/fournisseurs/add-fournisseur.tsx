@@ -35,6 +35,7 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
     address: "",
     willaya: "",
     phone: "",
+    email: "",
     activity: "",
     art: "",
     nis: "",
@@ -73,6 +74,7 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
     if (!model.fullName.trim()) newErrors.fullName = "Le nom complet est requis.";
     if (!model.address.trim()) newErrors.address = "L’adresse est requise.";
     if (!model.willaya.trim()) newErrors.willaya = "La wilaya est requise.";
+    if (!model.phone.trim()) newErrors.phone = "Le téléphone est requis.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -146,7 +148,7 @@ export const AddFournisseurModal: React.FC<AddFournisseurModalProps> = ({ isOpen
 
 
             {/* Optional fields */}
-            {["activity", "art", "nis", "nif", "rc", "capital"].map((field) => (
+            {["activity", "art", "nis", "nif", "rc", "capital", "phone", "email"].map((field) => (
               <div key={field}>
                 <label className="block font-medium capitalize">
                   {field.toUpperCase()}

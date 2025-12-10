@@ -6,7 +6,6 @@ import { loadFournisseursServerFn } from "@/server/fourniseur-fn";
 import { loadProductsServerFn } from "@/server/product-fn";
 import { createInvoiceServerFn } from "@/server/invoices-fn";
 import { NewInvoice, NewInvoiceItem } from "@/db/schema";
-import { Divide } from "lucide-react";
 
 export interface InvoiceLineItem {
   id: string;
@@ -14,6 +13,7 @@ export interface InvoiceLineItem {
   description: string;
   quantity: number;
   unitPrice: number;
+  salePrice: number;
   taxRate?: number;
 }
 
@@ -38,17 +38,17 @@ export interface InvoiceCreateModel {
 }
 
 const uid = (prefix = "") => `${prefix}${Math.random().toString(36).slice(2, 9)}`;
-const TIMBRE_AMOUNT = 0.6;
+
 
 /* ---------- Calculs ---------- */
-const calculateLineTotal = (item: InvoiceLineItem) => {
-  const base = item.quantity * item.unitPrice;
+const calculateLineTotal = (item: InvoiceLineItem, useSalePrice: boolean) => {
+  const base = useSalePrice ? item.quantity * item.salePrice : item.quantity * item.unitPrice;
   const tax = item.taxRate ? (base * item.taxRate) / 100 : 0;
   return { base, tax, total: base + tax };
 };
 
-const calculateInvoiceTotals = (invoice: InvoiceCreateModel) => {
-  const lines = invoice.items.map(calculateLineTotal);
+const calculateInvoiceTotals = (invoice: InvoiceCreateModel, useSalePrice: boolean) => {
+  const lines = invoice.items.map(item => calculateLineTotal(item, useSalePrice));
   const totalHT = lines.reduce((s, l) => s + l.base, 0);
   const totalTVA = lines.reduce((s, l) => s + l.tax, 0);
   const discount = invoice.discountAmount ?? 0;
@@ -81,12 +81,15 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
 
   const [clients, setClients] = useState<{ id: string; fullName: string }[]>([]);
   const [fournisseurs, setFournisseurs] = useState<{ id: string; fullName: string }[]>([]);
-  const [products, setProducts] = useState<{ id: string; description: string; unitPrice: number; taxRate?: number }[]>([]);
+  const [products, setProducts] = useState<{ id: string; description: string; unitPrice: number; salePrice: number; taxRate?: number }[]>([]);
   const [clientSearch, setClientSearch] = useState("");
   const [fournisseurSearch, setFournisseurSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [useSalePrice, setUseSalePrice] = useState(false);
 
-  const totals = useMemo(() => calculateInvoiceTotals(model), [model]);
+
+
+  const totals = useMemo(() => calculateInvoiceTotals(model, useSalePrice), [model]);
 
   const updateField = <K extends keyof InvoiceCreateModel>(key: K, value: InvoiceCreateModel[K]) =>
     setModel((m) => ({ ...m, [key]: value }));
@@ -94,6 +97,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
   const addItem = (productId: string) => {
     const product = products.find((p) => p.id === productId);
     if (!product) return;
+
     setModel((m) => ({
       ...m,
       items: [
@@ -104,6 +108,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
           description: product.description,
           quantity: 1,
           unitPrice: product.unitPrice,
+          salePrice: product.salePrice,
           taxRate: product.taxRate ?? 0,
         },
       ],
@@ -122,7 +127,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
   /* ---------- Mutation création facture ---------- */
   const createInvoiceMutation = useMutation({
     fn: async (data: InvoiceCreateModel) => {
-      const totalsCalc = calculateInvoiceTotals(data);
+      const totalsCalc = calculateInvoiceTotals(data, useSalePrice);
 
       const invoiceData: NewInvoice = {
         clientId: data.clientId,
@@ -139,6 +144,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
         transportLicense: data.transportLicense ?? "",
         creation: data.creation,
         delivery: data.delivery,
+        useSalePrice: useSalePrice,
       };
 
       const itemsData: Omit<NewInvoiceItem, "invoiceId">[] = data.items.map((item) => ({
@@ -170,12 +176,15 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
         setFournisseurs(fournisseursData.map((f: any) => ({ id: f.id, fullName: f.fullName })));
 
         const productsData = await loadProductsServerFn();
+
+        console.log("productsData", productsData)
         setProducts(
           productsData.map((p: any) => ({
             id: p.id,
             description: p.name ?? p.code ?? "Produit inconnu",
             unitPrice: Number(p.price) ?? 0,
             taxRate: Number(p.tva) ?? 0,
+            salePrice: Number(p.salePrice) ?? 0,
           }))
         );
       } catch (err) {
@@ -394,7 +403,18 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
             {/* Articles */}
             <fieldset className="border rounded p-4">
               <legend className="font-semibold text-blue-700">Articles</legend>
-
+              <div className="flex items-center mb-4">
+                <input
+                  type="checkbox"
+                  id="hideLogo"
+                  checked={useSalePrice}
+                  onChange={(e) => setUseSalePrice(e.target.checked)}
+                  className="mr-2"
+                />
+                <label htmlFor="hideLogo" className="text-gray-700">
+                  utilise le prix d'achat
+                </label>
+              </div>
               <div className="mb-3">
                 <select
                   className="border rounded px-2 py-1 w-full"
@@ -405,9 +425,13 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                   defaultValue=""
                 >
                   <option value="">Ajouter un article</option>
+
+
+
+
                   {products.map((i) => (
                     <option key={i.id} value={i.id}>
-                      {i.description} — {i.unitPrice.toFixed(2)} {model.currency} (TVA {i.taxRate ?? 0}%)
+                      {i.description} — Prix : {i.unitPrice.toFixed(2)} - Prix d'achat: {i.salePrice.toFixed(2)} {model.currency} (TVA {i.taxRate ?? 0}%)
                     </option>
                   ))}
                 </select>
@@ -425,7 +449,7 @@ export const AddInvoiceModal: React.FC<AddInvoiceModalProps> = ({ isOpen, onClos
                     onChange={(e) => updateItemQuantity(it.id, Number(e.target.value))}
                     className="border rounded px-2 py-1"
                   />
-                  <input value={it.unitPrice.toFixed(2)} disabled className="border rounded px-2 py-1 bg-gray-100" />
+                  <input value={useSalePrice ? it.salePrice.toFixed(2) : it.unitPrice.toFixed(2)} disabled className="border rounded px-2 py-1 bg-gray-100" />
                   <input value={it.taxRate?.toFixed(2) ?? "0"} disabled className="border rounded px-2 py-1 bg-gray-100" />
                   <button type="button" onClick={() => removeItem(it.id)} className="text-red-600 hover:text-red-800 text-lg">
                     <FaTrash />

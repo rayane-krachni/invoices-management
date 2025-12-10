@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useMutation } from "@/hooks/use-mutation";
 import { updateFournisseurServerFn } from "@/server/fourniseur-fn";
-import { ca } from "zod/v4/locales";
+
 
 export interface FournisseurModel {
   id: string;
@@ -15,6 +15,8 @@ export interface FournisseurModel {
   nif?: string;
   rc?: string;
   capital?: string;
+  phone?: string;
+  email?: string;
 }
 
 interface UpdateFournisseurModalProps {
@@ -61,6 +63,8 @@ export const UpdateFournisseurModal: React.FC<UpdateFournisseurModalProps> = ({
             nif: data.nif ?? "",
             rc: data.rc ?? "",
             capital: data.capital ?? "",
+            email: data.email ?? "",
+            phone: data.phone ?? ""
           },
         },
       }).then((res) => ({
@@ -74,6 +78,8 @@ export const UpdateFournisseurModal: React.FC<UpdateFournisseurModalProps> = ({
           rc: res.fournisseur.rc ?? undefined,
           updatedAt: res.fournisseur.updatedAt ?? undefined,
           capital: res.fournisseur.capital ?? undefined,
+          phone: res.fournisseur.phone ?? undefined,
+          email: res.fournisseur.email ?? undefined,
         },
       })),
     onSuccess: ({ data }) => {
@@ -115,7 +121,7 @@ export const UpdateFournisseurModal: React.FC<UpdateFournisseurModalProps> = ({
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.keys(model).map((key) => (
-              key != "phone" && <div key={key}>
+              <div key={key}>
                 <label className="block font-medium">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
                 <input
                   type="text"

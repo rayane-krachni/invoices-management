@@ -43,6 +43,8 @@ const FournisseurPage = () => {
         nif: fournisseur.nif ?? undefined,
         rc: fournisseur.rc ?? undefined,
         capital: fournisseur.capital ?? undefined,
+        phone: fournisseur.phone ?? undefined,
+        email: fournisseur.email ?? undefined
       }));
 
       setFournisseurs(normalizedData);
@@ -69,7 +71,9 @@ const FournisseurPage = () => {
         f.art?.toLowerCase().includes(term) ||
         f.nis?.toLowerCase().includes(term) ||
         f.nif?.toLowerCase().includes(term) ||
-        f.rc?.toLowerCase().includes(term)
+        f.rc?.toLowerCase().includes(term) ||
+        f.phone?.toLowerCase().includes(term) ||
+        f.email?.toLowerCase().includes(term)
     );
     setFilteredFournisseurs(results);
   }, [searchTerm, fournisseurs]);

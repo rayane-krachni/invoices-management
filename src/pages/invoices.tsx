@@ -36,6 +36,8 @@ export interface InvoiceModel {
   items: any[];
   creation: string;
   delivery: string;
+  useSalePrice: boolean
+
 }
 
 const InvoicesPage: React.FC = () => {
@@ -75,6 +77,8 @@ const InvoicesPage: React.FC = () => {
         items: inv.items ?? [],
         creation: inv.invoice.creation,
         delivery: inv.invoice.delivery,
+        useSalePrice: inv.invoice.useSalePrice ?? false
+
       }));
       setInvoices(normalizedInvoices);
       setFilteredInvoices(normalizedInvoices);

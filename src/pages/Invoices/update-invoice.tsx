@@ -8,10 +8,10 @@ import { createInvoiceServerFn, updateInvoiceServerFn } from "@/server/invoices-
 import { NewInvoice, NewInvoiceItem } from "@/db/schema";
 import { InvoiceCreateModel, InvoiceLineItem } from "./add-invoice";
 import { InvoiceModel } from "../invoices";
-import { json } from "zod";
+
 
 const uid = (prefix = "") => `${prefix}${Math.random().toString(36).slice(2, 9)}`;
-const TIMBRE_AMOUNT = 0.6;
+
 
 /* ---------- Calculs ---------- */
 const calculateLineTotal = (item: InvoiceLineItem) => {
@@ -38,6 +38,8 @@ interface AddInvoiceModalProps {
 }
 
 export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, isOpen, onClose, onUpdate }) => {
+
+    const [useSalePrice, setUseSalePrice] = useState(false);
     const [model, setModel] = useState<InvoiceCreateModel>({
         clientId: "",
         fournisseurId: "",
@@ -51,13 +53,14 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
         discountAmount: 0,
         paymentMode: "Cheque",
         creation: "",
-        delivery: ""
+        delivery: "",
+
     });
 
 
     const [clients, setClients] = useState<{ id: string; fullName: string }[]>([]);
     const [fournisseurs, setFournisseurs] = useState<{ id: string; fullName: string }[]>([]);
-    const [products, setProducts] = useState<{ id: string; description: string; unitPrice: number; taxRate?: number }[]>([]);
+    const [products, setProducts] = useState<{ id: string; description: string; unitPrice: number; salePrice: number; taxRate?: number }[]>([]);
     const [clientSearch, setClientSearch] = useState("");
     const [fournisseurSearch, setFournisseurSearch] = useState("");
     const [loading, setLoading] = useState(false);
@@ -80,6 +83,7 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                     description: product.description,
                     quantity: 1,
                     unitPrice: product.unitPrice,
+                    salePrice: product.salePrice,
                     taxRate: product.taxRate ?? 0,
                 },
             ],
@@ -192,6 +196,9 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                 items: itemsData,
                 creation: model.creation ?? "",
                 delivery: model.delivery ?? "",
+                useSalePrice: false
+
+
             });
 
             onClose();
@@ -220,6 +227,7 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                         id: p.id,
                         description: p.name ?? p.code ?? "Produit inconnu",
                         unitPrice: Number(p.price) ?? 0,
+                        salePrice: Number(p.salePrice) ?? 0,
                         taxRate: Number(p.tva) ?? 0,
                     }))
                 );
@@ -251,6 +259,7 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                 description: item.description || item.product?.name || "Produit inconnu",
                 quantity: Number(item.quantity || item.item?.quantity || 1),
                 unitPrice: Number(item.unitPrice || item.item?.unitPrice || 0),
+                salePrice: Number(item.salePrice || item.product?.salePrice || 0),
                 taxRate: Number(item.taxRate || item.item?.taxRate || 0),
             })) || [],
             discountAmount: Number(invoice.discountAmount) || 0,
@@ -261,6 +270,8 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
             creation: invoice.creation,
             delivery: invoice.delivery,
         });
+        setUseSalePrice(invoice.useSalePrice ?? false);
+
     }, []);
 
 
@@ -480,7 +491,18 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                         {/* Articles */}
                         <fieldset className="border rounded p-4">
                             <legend className="font-semibold text-blue-700">Articles</legend>
-
+                            <div className="flex items-center mb-4">
+                                <input
+                                    type="checkbox"
+                                    id="hideLogo"
+                                    checked={useSalePrice}
+                                    onChange={(e) => setUseSalePrice(e.target.checked)}
+                                    className="mr-2"
+                                />
+                                <label htmlFor="hideLogo" className="text-gray-700">
+                                    utilise le prix d'achat
+                                </label>
+                            </div>
                             <div className="mb-3">
                                 <select
                                     className="border rounded px-2 py-1 w-full"
@@ -493,7 +515,7 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                                     <option value="">Ajouter un article</option>
                                     {products.map((i) => (
                                         <option key={i.id} value={i.id}>
-                                            {i.description} — {i.unitPrice.toFixed(2)} {model.currency} (TVA {i.taxRate ?? 0}%)
+                                            {i.description} — Prix: {i.unitPrice.toFixed(2)} — Prix d'achat: {model.currency} (TVA {i.taxRate ?? 0}%)
                                         </option>
                                     ))}
                                 </select>
@@ -511,7 +533,9 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
                                         onChange={(e) => updateItemQuantity(it.id, Number(e.target.value))}
                                         className="border rounded px-2 py-1"
                                     />
-                                    <input value={it.unitPrice.toFixed(2)} disabled className="border rounded px-2 py-1 bg-gray-100" />
+
+                                    <input value={useSalePrice ? it.salePrice.toFixed(2) : it.unitPrice.toFixed(2)} disabled className="border rounded px-2 py-1 bg-gray-100" />
+
                                     <input value={it.taxRate?.toFixed(2) ?? "0"} disabled className="border rounded px-2 py-1 bg-gray-100" />
                                     <button type="button" onClick={() => removeItem(it.id)} className="text-red-600 hover:text-red-800 text-lg">
                                         <FaTrash />
