@@ -103,7 +103,7 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
     /* ---------- Mutation création facture ---------- */
     const updateInvoiceMutation = useMutation({
         fn: async (data: InvoiceCreateModel) => {
-            const totalsCalc = calculateInvoiceTotals(data);
+            const totalsCalc = calculateInvoiceTotals(data, useSalePrice);
 
             const invoiceData: NewInvoice = {
                 id: invoice.id,
@@ -171,7 +171,7 @@ export const UpadateInvoiceModal: React.FC<AddInvoiceModalProps> = ({ invoice, i
 
         },
         onSuccess: ({ data }) => {
-            const totalsCalc = calculateInvoiceTotals(model);
+            const totalsCalc = calculateInvoiceTotals(model, useSalePrice);
             const itemsData: Omit<NewInvoiceItem, "invoiceId">[] = model.items.map((item) => ({
                 productId: item.productId,
                 quantity: item.quantity,
